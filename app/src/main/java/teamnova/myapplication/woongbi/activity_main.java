@@ -46,7 +46,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     SwipeMenuListView listView = null;
     ArrayList<String> arrayList = null;
     View fakeView, fakeView2;
-    int button_hight = 700;
+    int button_hight = 790;
     boolean down = true, once = true;
     MapView mapView;
     MapPOIItem customMarker;
@@ -107,16 +107,16 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //                startActivity(intent);
 
 
-        down_image_I.setImageResource(data_list.get(nowPlay).image);
-        down_title_T.setText(data_list.get(nowPlay).title.toString());
-        down_artist_T.setText(data_list.get(nowPlay).artist);
-        down_image_btn.setImageResource(R.drawable.btn_pause);
-
-
-        serviceManager = new MusicServiceManager(activity_main.this, data_list.get(nowPlay).sound);
-        serviceManager.start();
-
-        start_btn_condition = false; // 일시정지 버튼
+//        down_image_I.setImageResource(data_list.get(nowPlay).image);
+//        down_title_T.setText(data_list.get(nowPlay).title.toString());
+//        down_artist_T.setText(data_list.get(nowPlay).artist);
+//        down_image_btn.setImageResource(R.drawable.btn_pause);
+//
+//
+//        serviceManager = new MusicServiceManager(activity_main.this, data_list.get(nowPlay).sound);
+//        serviceManager.start();
+//
+//        start_btn_condition = false; // 일시정지 버튼
 
 
 
@@ -134,18 +134,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 deleteItem.setTitleSize(18);
                 deleteItem.setTitleColor(Color.WHITE);
                 deleteItem.setWidth(dp2px(80));
-                menu.addMenuItem(deleteItem);
-            }
-        };
-        final SwipeMenuCreator creator_alpha = new SwipeMenuCreator() {
-
-            @Override
-            public void create(SwipeMenu menu) {
-
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getApplicationContext());
-                deleteItem.setBackground(Color.parseColor("#ffffff"));
-                deleteItem.setWidth(dp2px(200));
                 menu.addMenuItem(deleteItem);
             }
         };
@@ -173,7 +161,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                listView.setMenuCreator(creator_alpha);
                 nowPlay--;
                 data_list.remove(position);
                 list_adapter.notifyDataSetChanged();
