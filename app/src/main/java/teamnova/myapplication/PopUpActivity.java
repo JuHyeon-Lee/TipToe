@@ -14,10 +14,8 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
 public class PopUpActivity extends Activity {
 
     myAdapter Adapter;
-    RadioButton ar_switch;
+    Button ar_switch;
     Handler handler = new Handler();
     TextView title;
     ProgressDialog dialog;
@@ -40,7 +38,7 @@ public class PopUpActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dialog_popup);
 
-        ar_switch = (RadioButton) findViewById(R.id.popup_ar_switch);
+        ar_switch = (Button) findViewById(R.id.popup_ar_switch);
         title = (TextView) findViewById(R.id.location_title);
         add = (Button) findViewById(R.id.popup_music_add);
 
@@ -53,40 +51,50 @@ public class PopUpActivity extends Activity {
                 finish();
             }
         });
+//
+//        ar_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+////                Log.e("TAG","CHEKC 진입");
+//                if(isChecked) {
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                Thread.sleep(500);
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//
+//
+//                            Intent intent = new Intent(PopUpActivity.this, ARActivity.class);
+//                            intent.putExtra("kind", getIntent().getIntExtra("kind", -1));
+//                            startActivity(intent);
+//
+//                        handler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                ar_switch.setChecked(false);
+//                            }
+//                        });
+//                        }
+//                    }).start();
+//                }
 
-        ar_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//
+//            }
+//
+//        });
+
+        ar_switch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-//                Log.e("TAG","CHEKC 진입");
-                if(isChecked) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-
-                            Intent intent = new Intent(PopUpActivity.this, ARActivity.class);
-                            intent.putExtra("kind", getIntent().getIntExtra("kind", -1));
-                            startActivity(intent);
-
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ar_switch.setChecked(false);
-                            }
-                        });
-                        }
-                    }).start();
-                }
-
-
+            public void onClick(View view) {
+                //                Log.e("TAG","CHEKC 진입");
+                Intent intent = new Intent(PopUpActivity.this, ARActivity.class);
+                intent.putExtra("kind", getIntent().getIntExtra("kind", -1));
+                startActivity(intent);
             }
-
-        });
+    });
 
 
         switch(getIntent().getIntExtra("kind", -1)){
