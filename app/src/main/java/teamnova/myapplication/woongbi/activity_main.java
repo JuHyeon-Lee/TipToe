@@ -2,12 +2,14 @@ package teamnova.myapplication.woongbi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,9 +22,8 @@ import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
+import teamnova.myapplication.MusicMainScreenActivity;
 import teamnova.myapplication.R;
-
-import static android.R.attr.bitmap;
 
 
 public class activity_main extends Activity {
@@ -34,7 +35,7 @@ public class activity_main extends Activity {
     boolean down = true, once = true;
     MapView mapView;
     MapPOIItem marker;
-    ArrayList<Data> data_list;
+    static public ArrayList<Data> data_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +54,13 @@ public class activity_main extends Activity {
         List_Adapter list_adapter = new List_Adapter(getApplicationContext());
 //        for(int i = 0; i < 30; i++)
 //            arrayList.add("abc"+i);
+
         for(int i = 0; i < 20; i++){
-            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, R.raw.background);
+            boolean alpha = true;
+            if(i > 10)
+                alpha = false;
+
+            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, R.raw.background, alpha);
             data_list.add(data);
         }
 
@@ -71,13 +77,15 @@ public class activity_main extends Activity {
         boolean hart;
         int hartcount;
         int sound;
-        Data(int image, String title, String artist, boolean hart, int hartcount, int sound){
-            this.image = bitmap;
+        boolean alpha;
+        Data(int image, String title, String artist, boolean hart, int hartcount, int sound, boolean alpha){
+            this.image = image;
             this.title = title;
             this.artist = artist;
             this.hart = hart;
             this.hartcount = hartcount;
             this.sound = sound;
+            this.alpha = alpha;
         }
     }
 
@@ -166,6 +174,16 @@ public class activity_main extends Activity {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
+                Log.d("main_position", ""+(i-1));
+                intent.putExtra("position",i-1);
+                startActivity(intent);
             }
         });
     }
