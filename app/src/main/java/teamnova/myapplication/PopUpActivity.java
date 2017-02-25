@@ -1,21 +1,23 @@
 package teamnova.myapplication;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -28,6 +30,8 @@ public class PopUpActivity extends Activity {
     RadioButton ar_switch;
     Handler handler = new Handler();
     TextView title;
+    ProgressDialog dialog;
+
 
     Button add;
     @Override
@@ -94,26 +98,61 @@ public class PopUpActivity extends Activity {
                 list.setAdapter(Adapter);
                 list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 list.setDividerHeight(2);
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        dialog = ProgressDialog.show(PopUpActivity.this, "", "재생 목록에 추가 중입니다.", true);
+                        dialog.show();
+                        MusicListUtil.내가등록한음악리스트.add(MusicListUtil.위워크에등록된음악리스트.get(i));
+                        EndDialog endDialog = new EndDialog();
+                        endDialog.start();
+                    }
+                });
+
                 break;
             case 3://교회
                 title.setText("평린 교회");
                 ar_switch.setVisibility(View.INVISIBLE);
+                add.setVisibility(View.INVISIBLE);
                 Adapter = new myAdapter(getApplicationContext(), R.layout.dialog_popup_item, MusicListUtil.평린교회에등록된음악리스트);
                 ListView list2 = (ListView) findViewById(R.id.popup_list);
 
                 list2.setAdapter(Adapter);
                 list2.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 list2.setDividerHeight(2);
+                list2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        dialog = ProgressDialog.show(PopUpActivity.this, "", "재생 목록에 추가 중입니다.", true);
+                        dialog.show();
+                        MusicListUtil.내가등록한음악리스트.add(MusicListUtil.평린교회에등록된음악리스트.get(i));
+                        EndDialog endDialog = new EndDialog();
+                        endDialog.start();
+                    }
+                });
+
                 break;
             case 4://건설
                 title.setText("SK 건설 을지로점");
                 ar_switch.setVisibility(View.INVISIBLE);
+                add.setVisibility(View.INVISIBLE);
                 Adapter = new myAdapter(getApplicationContext(), R.layout.dialog_popup_item, MusicListUtil.SK건설에등록된음악리스트);
                 ListView list3 = (ListView) findViewById(R.id.popup_list);
 
                 list3.setAdapter(Adapter);
                 list3.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
                 list3.setDividerHeight(2);
+                list3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        dialog = ProgressDialog.show(PopUpActivity.this, "", "재생 목록에 추가 중입니다.", true);
+                        dialog.show();
+                        MusicListUtil.내가등록한음악리스트.add(MusicListUtil.SK건설에등록된음악리스트.get(i));
+                        EndDialog endDialog = new EndDialog();
+                        endDialog.start();
+                    }
+                });
+
                 break;
             default:
                 break;
@@ -186,4 +225,29 @@ public class PopUpActivity extends Activity {
 
     }
 
+    Handler DialogHandler = new Handler (){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            dialog.dismiss();
+
+            finish();
+//            startActivity(new Intent(getApplicationContext(), activity_main.class));
+//            startActivity(intent);
+        }
+    };
+
+    class EndDialog extends Thread {
+        public void run(){
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            DialogHandler.sendEmptyMessage(0);
+        }
+    }
 }
