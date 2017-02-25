@@ -202,9 +202,17 @@ public class PopUpActivity extends Activity {
                 convertView = inflater.inflate(layout, parent, false);
                 holder = new ViewHolder();
 
+//                holder.Image = (ImageView) convertView.findViewById(R.id.popup_image);
+//                holder.artist_name = (TextView) convertView.findViewById(R.id.popup_artist_T);
+//                holder.music_title = (TextView) convertView.findViewById(R.id.popup_title_T);
+
                 holder.Image = (ImageView) convertView.findViewById(R.id.popup_image);
-                holder.artist_name = (TextView) convertView.findViewById(R.id.popup_artist_T);
-                holder.music_title = (TextView) convertView.findViewById(R.id.popup_title_T);
+                holder.artist_name = (TextView) convertView.findViewById(R.id.popup_artist);
+                holder.music_title = (TextView) convertView.findViewById(R.id.popup_title);
+                holder.like_cnt = (TextView) convertView.findViewById(R.id.popup_like_cnt);
+//                holder.like_boolean = (ImageView) convertView.findViewById(R.id.popup_like);
+
+
                 //cells 를 뷰화시켜서 아이템목록으로 삽입
                 convertView.setTag(holder);
             }else {
@@ -213,15 +221,23 @@ public class PopUpActivity extends Activity {
             holder.music_title.setText(components_list.get(position).title);
             holder.artist_name.setText(components_list.get(position).artist);
             Glide.with(PopUpActivity.this).load(components_list.get(position).image).into(holder.Image);
+            holder.like_cnt.setText(String .valueOf(components_list.get(position).hartcount));
+
+
+
+
 
             return convertView;
         }
 
     }
-    static class ViewHolder {
+
+    class ViewHolder {
         ImageView Image;
         TextView music_title;
         TextView artist_name;
+        TextView like_cnt;
+        ImageView like_boolean;
 
     }
 
