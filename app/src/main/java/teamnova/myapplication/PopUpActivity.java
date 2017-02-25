@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class PopUpActivity extends Activity {
 
     myAdapter Adapter;
-    Switch ar_switch;
+    RadioButton ar_switch;
     Handler handler = new Handler();
     TextView title;
     @Override
@@ -32,7 +33,7 @@ public class PopUpActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_dialog_popup);
 
-        ar_switch = (Switch) findViewById(R.id.popup_ar_switch);
+        ar_switch = (RadioButton) findViewById(R.id.popup_ar_switch);
         title = (TextView) findViewById(R.id.location_title);
 
         ar_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

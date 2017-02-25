@@ -567,5 +567,11 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RelativeLayout playing = (RelativeLayout) findViewById(R.id.relative);
+        playing.bringToFront();
+    }
 }
 

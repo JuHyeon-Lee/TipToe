@@ -2,28 +2,93 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:weightSum="20">
+    android:gravity="bottom"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_weight="18"
-        android:layout_height="0dp">
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="#f4f4f4"
+            android:layout_gravity="bottom"
+            android:id="@+id/relative"
+            android:layout_height="70dp">
+
+
+            <ImageButton
+                android:layout_height="50dp"
+                android:layout_gravity="center|"
+                android:id="@+id/image_btn"
+                android:scaleType="fitCenter"
+                android:background="#00FF0000"
+                android:src="@drawable/btn_play"
+                android:alpha="0.7"
+                android:layout_marginRight="25dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="50dp" />
+
+            <ImageButton
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:scaleType="fitCenter"
+                android:id="@+id/down_image_btn"
+                android:src="@mipmap/ic_launcher"
+                android:background="#00FF0000"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_width="50dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/down_image_btn">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="40px"
+                    android:id="@+id/title_T"
+                    android:text="sober"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textSize="30px"
+                    android:id="@+id/artist_T"
+                    android:text="childish Gambino"/>
+
+
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="245px"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
-            android:background="#f4f4f4"
+            android:background="#f8f8f7"
             android:text="재생목록"
-            android:id="@+id/up"/>
+            android:id="@+id/up"
+            android:layout_height="150px" />
 
         <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@android:color/white" />
 
@@ -56,67 +121,5 @@
         </FrameLayout>
 
     </FrameLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#fff"
-        android:id="@+id/relative"
-        android:layout_weight="2">
-
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|"
-            android:id="@+id/image_btn"
-            android:scaleType="fitCenter"
-            android:background="#00FF0000"
-            android:src="@drawable/btn_play"
-            android:layout_marginRight="15dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true" />
-
-        <ImageButton
-            android:layout_width="70dp"
-            android:layout_height="match_parent"
-            android:scaleType="fitCenter"
-            android:id="@+id/down_image_btn"
-            android:src="@mipmap/ic_launcher"
-            android:background="#00FF0000"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/down_image_btn"
-            android:layout_marginStart="36dp">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="40px"
-                android:id="@+id/title_T"
-                android:text="sober"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="30px"
-                android:id="@+id/artist_T"
-                android:text="childish Gambino"/>
-
-
-
-
-        </LinearLayout>
-
-    </RelativeLayout>
 
 </LinearLayout>
