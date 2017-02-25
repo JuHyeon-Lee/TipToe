@@ -167,8 +167,8 @@ public class activity_main extends Activity {
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
             }
 
-            TextView textView = (TextView)view.findViewById(R.id.tv_num_of_like);
-            textView.setText(arrayList.get(i));
+//            TextView textView = (TextView)view.findViewById(R.id.tv_num_of_like);
+//            textView.setText(arrayList.get(i));
             ImageView image_I = (ImageView) view.findViewById(R.id.image_I);
             TextView title_T = (TextView)view.findViewById(R.id.title_T);
             TextView artist_T = (TextView)view.findViewById(R.id.artist_T);
