@@ -12,9 +12,11 @@ import android.os.IBinder;
 
 public class MusicServiceManager {
 
-    private MusicService mp3Service;
+    private MusicService musicService;
     private Activity activity;
     private int musicResource;
+
+    public static boolean OK_READY = false;
 
     public MusicServiceManager(Activity activity, int musicResource) {
 
@@ -28,8 +30,10 @@ public class MusicServiceManager {
         public void onServiceConnected(ComponentName name, IBinder service) {
 
             MusicService.LocalBinder localBinder = (MusicService.LocalBinder) service;
-            mp3Service = localBinder.getService();
-            mp3Service.start();
+            musicService = localBinder.getService();
+            musicService.start();
+
+            OK_READY = true;
         }
 
         @Override
@@ -38,26 +42,96 @@ public class MusicServiceManager {
         }
     };
 
+    private final ServiceConnection serviceConnection2 = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            MusicService.LocalBinder localBinder = (MusicService.LocalBinder) service;
+            musicService = localBinder.getService();
+            musicService.start();
+            musicService.pause();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+    public int getMusicResource() {
+        return musicResource;
+    }
+
+    public boolean isPlaying() {
+
+        return musicService.isPlaying();
+    }
+
+    public void seekTo(int seek) {
+
+        if(musicService != null)
+            musicService.seekTo(seek);
+    }
+
+    public int getCurrentPosition() {
+
+        if(musicService != null)
+            return musicService.getCurrentPosition();
+        else
+            return 0;
+    }
+
+    public int getDuration() {
+
+        if(musicService != null)
+            return musicService.getDuration();
+        else
+            return 0;
+    }
+
     public void start() {
 
         Intent intent = new Intent(activity, MusicService.class);
         intent.putExtra("music_resource", musicResource);
 
+        if(musicService != null && musicService.isPlaying()) {
+
+            musicService.stop();
+        }
+
         activity.bindService(intent, serviceConnection, MusicService.CONFIG_DEFAULT);
+    }
+
+    public void startOnPause() {
+
+        Intent intent = new Intent(activity, MusicService.class);
+        intent.putExtra("music_resource", musicResource);
+
+        if(musicService != null && musicService.isPlaying()) {
+
+            musicService.stop();
+        }
+
+        activity.bindService(intent, serviceConnection2, MusicService.CONFIG_DEFAULT);
     }
 
     public void pause() {
 
-        mp3Service.pause();
+        musicService.pause();
     }
 
     public void stop() {
 
-        mp3Service.stop();
+        if(musicService != null && musicService.isPlaying())
+            musicService.stop();
+
+        OK_READY = false;
     }
 
     public void restart() {
 
-        mp3Service.restart();
+        if(musicService != null)
+            musicService.restart();
     }
 }

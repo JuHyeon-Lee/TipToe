@@ -26,7 +26,7 @@
             android:layout_marginLeft="17dp"/>
 
         <TextView
-            android:text="99:99"
+            android:text="00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/tv_cur_music_pos"
@@ -36,8 +36,9 @@
 
         <SeekBar
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:id="@+id/seekBar"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekbar_main_music"
+
             android:layout_above="@+id/tv_cur_music_pos"
             android:thumb="@drawable/seekbar_thumb"
             android:progressDrawable="@drawable/seekbar_frame"
@@ -52,7 +53,7 @@
             android:layout_height="300dp"
             app:srcCompat="@drawable/albumart"
             android:id="@+id/iv_album_art"
-            android:layout_above="@+id/seekBar"
+            android:layout_above="@+id/seekbar_main_music"
             android:layout_centerHorizontal="true" />
 
     </RelativeLayout>
@@ -61,8 +62,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.25">
-
-
 
         <FrameLayout
             android:layout_width="wrap_content"

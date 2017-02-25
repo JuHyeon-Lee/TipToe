@@ -14,13 +14,16 @@
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginRight="10dp"
+
+
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:id="@+id/tv_num_of_like"
+        android:id="@+id/lin"
         android:textColor="#000"
         android:text="abc"
         android:orientation="vertical">
@@ -65,16 +68,19 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/heart">
 
                 <ImageView
                     android:background="@drawable/btn_like"
+                    android:visibility="invisible"
                     android:id="@+id/item_hart"
                     android:layout_width="20dp"
                     android:layout_height="17dp" />
 
                 <ImageView
                     app:srcCompat="@drawable/btn_like_on"
+                    android:visibility="invisible"
                     android:id="@+id/item_hart_on"
                     android:layout_width="20dp"
                     android:layout_height="17dp" />

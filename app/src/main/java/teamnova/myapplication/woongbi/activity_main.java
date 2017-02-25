@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -26,10 +27,16 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
+import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
 import java.lang.ref.WeakReference;
@@ -49,12 +56,12 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     View fakeView, fakeView2;
     int button_hight = 890;
     //790
-    boolean down = true, once = true;
+    boolean down = true, once = true, song_once = true;
     MapView mapView;
     MapPOIItem customMarker;
     MapPOIItem marker;
 
-    public ArrayList<Data> data_list = new ArrayList<Data>();
+    static public ArrayList<Data> data_list = new ArrayList<Data>();
 
     static public Handler handler;
     int nowPlay;
@@ -65,6 +72,11 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     ImageButton down_image_btn;
     MusicServiceManager serviceManager;
     boolean start_btn_condition = true;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +106,13 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //            data_list.add(data);
 //        }
 
-        MusicListUtil.내가등록한음악리스트.get(3).now_play = true;
-        down_image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(3).image);
-        down_title_T.setText(MusicListUtil.내가등록한음악리스트.get(3).title.toString());
-        down_artist_T.setText(MusicListUtil.내가등록한음악리스트.get(3).artist);
+        nowPlay = 3;
+        MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = true;
+        down_image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(nowPlay).image);
+        down_title_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).title.toString());
+        down_artist_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).artist);
         serviceManager = new MusicServiceManager(activity_main.this, MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
-        serviceManager.startOnpause();
+
 
         listView.setAdapter(list_adapter);
         listView.addHeaderView(fakeView);
@@ -157,6 +170,9 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         listView.setSwipeDirection(SwipeMenuListView.DIRECTION_RIGHT);
         listView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private int dp2px(int dp) {
@@ -210,7 +226,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         customMarker.setTag(3);
         customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.565618, 126.986686));
         customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-        customMarker.setCustomImageResourceId(R.drawable.marker02); // 마커 이미지.
+        customMarker.setCustomImageResourceId(R.drawable.marker03); // 마커 이미지.
         customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
         customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
 
@@ -222,7 +238,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         customMarker.setTag(4);
         customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.565653, 126.987947));
         customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-        customMarker.setCustomImageResourceId(R.drawable.marker02); // 마커 이미지.
+        customMarker.setCustomImageResourceId(R.drawable.marker03); // 마커 이미지.
         customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
         customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
 
@@ -232,18 +248,18 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         MapCircle circle1 = new MapCircle(
                 MapPoint.mapPointWithGeoCoord(37.5649932, 126.9872227), // center
                 50, // radius
-                Color.argb(128, 255, 0, 0), // strokeColor
-                Color.argb(128, 255, 255, 0) // fillColor
+                Color.argb(100, 247, 91, 59), // strokeColor
+                Color.argb(100, 247, 91, 59) // fillColor
         );
         circle1.setTag(1234);
         mapView.addCircle(circle1);
 
 //
-//// 지도뷰의 중심좌표와 줌레벨을 Circle이 모두 나오도록 조정.
-//        MapPointBounds[] mapPointBoundsArray = { circle1.getBound()};
-//        MapPointBounds mapPointBounds = new MapPointBounds(mapPointBoundsArray);
-//        int padding = 50; // px
-//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
+// 지도뷰의 중심좌표와 줌레벨을 Circle이 모두 나오도록 조정.
+        MapPointBounds[] mapPointBoundsArray = {circle1.getBound()};
+        MapPointBounds mapPointBounds = new MapPointBounds(mapPointBoundsArray);
+        int padding = 50; // px
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
     }
 
     @Override
@@ -300,6 +316,11 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 intent2.putExtra("kind", 2);
                 startActivity(intent2);
                 break;
+//            case 1234: //워크
+//                Intent intent5 = new Intent(activity_main.this, PopUpActivity.class);
+//                intent5.putExtra("kind", 2);
+//                startActivity(intent5);
+//                break;
             case 3: //교회
                 Intent intent3 = new Intent(activity_main.this, PopUpActivity.class);
                 intent3.putExtra("kind", 3);
@@ -314,6 +335,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             default:
                 break;
         }
+
     }
 
     @Override
@@ -331,6 +353,32 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint
             mapPoint) {
 
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("activity_main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 
 
@@ -357,7 +405,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
+        public View getView(final int i, View view, ViewGroup viewGroup) {
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
@@ -390,9 +438,23 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             Log.d("list_nowalpha", MusicListUtil.내가등록한음악리스트.get(i).alpha + "");
             if (MusicListUtil.내가등록한음악리스트.get(i).alpha) {
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(0.3f);
-            }else{
+            } else {
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(1f);
             }
+
+            FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.heart);
+            frameLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(MusicListUtil.내가등록한음악리스트.get(i).hart){
+                        MusicListUtil.내가등록한음악리스트.get(i).hart = false;
+                        ((ImageView)view.findViewById(R.id.item_hart)).setVisibility(View.VISIBLE);
+                    }else{
+                        MusicListUtil.내가등록한음악리스트.get(i).hart = true;
+                        ((ImageView)view.findViewById(R.id.item_hart_on)).setVisibility(View.VISIBLE);
+                    }
+                }
+            });
 
 
             return view;
@@ -444,6 +506,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                song_once = false;
+
                 if (serviceManager != null)
                     serviceManager.stop();
 
@@ -478,9 +542,16 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             @Override
             public void onClick(View view) {
                 if (start_btn_condition) {
-                    down_image_btn.setImageResource(R.drawable.selector_pause);
-                    serviceManager.restart();
-                    start_btn_condition = false;
+                    if(song_once) {
+                        serviceManager.start();
+                        song_once = false;
+                        down_image_btn.setImageResource(R.drawable.selector_pause);
+                        start_btn_condition = false;
+                    }else{
+                        down_image_btn.setImageResource(R.drawable.selector_pause);
+                        serviceManager.restart();
+                        start_btn_condition = false;
+                    }
                 } else {
                     down_image_btn.setImageResource(R.drawable.selector_play);
                     serviceManager.pause();
@@ -631,9 +702,14 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
     @Override
     protected void onStart() {
-        super.onStart();
+        super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         RelativeLayout playing = (RelativeLayout) findViewById(R.id.relative);
         playing.bringToFront();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 }
 
