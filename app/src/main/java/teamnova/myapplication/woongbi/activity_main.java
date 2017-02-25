@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,6 +25,8 @@ import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
+import teamnova.myapplication.Data;
+import teamnova.myapplication.MusicMainScreenActivity;
 import teamnova.myapplication.PopUpActivity;
 import teamnova.myapplication.R;
 
@@ -37,12 +40,15 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     boolean down = true, once = true;
     MapView mapView;
     MapPOIItem customMarker;
-    ArrayList<Data> data_list;
+    MapPOIItem marker;
+
+    public ArrayList<Data> data_list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.woongbi_activity_main);
+
 
         New_class(); // 선언
         Get_Map(); // 맵 가져오기
@@ -59,10 +65,14 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         List_Adapter list_adapter = new List_Adapter(getApplicationContext());
 //        for(int i = 0; i < 30; i++)
 //            arrayList.add("abc"+i);
+
         for(int i = 0; i < 20; i++){
-            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, false , R.raw.background ,false);
+            boolean alpha = true;
+            if(i > 10)
+                alpha = false;
 
 
+            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, false, R.raw.background, alpha);
             data_list.add(data);
         }
 
@@ -252,32 +262,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
     }
 
-    public class Data {
-        int image;
-        String title;
-        String artist;
-        boolean hart;
-        int hartcount;
-        boolean now_play;
-        int sound;
-        boolean alpha;
-
-        Data(int image, String title, String artist, boolean hart, int hartcount, boolean now_play, int sound, boolean alpha){
-            this.image = image;
-            this.title = title;
-            this.artist = artist;
-            this.hart = hart;
-            this.hartcount = hartcount;
-            this.sound = sound;
-            this.now_play = now_play;
-            this.alpha = alpha;
-
-
-        }
-
-
-
-    }
 
 
     class List_Adapter extends BaseAdapter{
@@ -309,6 +293,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
             }
 
+//            TextView textView = (TextView)view.findViewById(R.id.tv_num_of_like);
+//            textView.setText(arrayList.get(i));
             ImageView image_I = (ImageView) view.findViewById(R.id.image_I);
             TextView title_T = (TextView)view.findViewById(R.id.title_T);
             TextView artist_T = (TextView)view.findViewById(R.id.artist_T);
@@ -364,6 +350,16 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
+                Log.d("main_position", ""+(i-1));
+                intent.putExtra("position",i-1);
+                startActivity(intent);
             }
         });
     }
