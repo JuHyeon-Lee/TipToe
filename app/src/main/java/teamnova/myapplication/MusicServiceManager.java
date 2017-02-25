@@ -42,6 +42,23 @@ public class MusicServiceManager {
         }
     };
 
+    private final ServiceConnection serviceConnection2 = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            MusicService.LocalBinder localBinder = (MusicService.LocalBinder) service;
+            musicService = localBinder.getService();
+            musicService.start();
+            musicService.pause();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
     public int getMusicResource() {
         return musicResource;
     }
@@ -78,7 +95,25 @@ public class MusicServiceManager {
         Intent intent = new Intent(activity, MusicService.class);
         intent.putExtra("music_resource", musicResource);
 
+        if(musicService != null && musicService.isPlaying()) {
+
+            musicService.stop();
+        }
+
         activity.bindService(intent, serviceConnection, MusicService.CONFIG_DEFAULT);
+    }
+
+    public void startOnPause() {
+
+        Intent intent = new Intent(activity, MusicService.class);
+        intent.putExtra("music_resource", musicResource);
+
+        if(musicService != null && musicService.isPlaying()) {
+
+            musicService.stop();
+        }
+
+        activity.bindService(intent, serviceConnection2, MusicService.CONFIG_DEFAULT);
     }
 
     public void pause() {

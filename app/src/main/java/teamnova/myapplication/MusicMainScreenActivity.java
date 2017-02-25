@@ -26,9 +26,11 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
     ImageButton btnGoHome;
     ImageButton btnPlay;
+    ImageButton btnPause;
 
     ImageButton btnGoBeforeMusic;
     ImageButton btnGoNextMusic;
+
 
     TextView tvCurMusicPos;
     TextView tvMusicSize;
@@ -37,6 +39,9 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
     TextView tvMusicTitle;
     TextView tvMusicSinger;
+
+    ImageView imgViewLike;
+    ImageView imgViewNotLike;
 
     public static MusicServiceManager serviceManager;
 
@@ -52,6 +57,10 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             super.run();
 
             boolean escapeFlag = false;
+
+            if(serviceManager == null) {
+                return;
+            }
 
             while(threadAlive) {
 
@@ -141,34 +150,130 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         }
     }
 
+    final Handler handler = new Handler(Looper.getMainLooper()) {
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            if(msg.what == 1) {
+
+                imgViewLike.setVisibility(View.INVISIBLE);
+                imgViewNotLike.setVisibility(View.VISIBLE);
+
+                tvNumOfLike.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+                    }
+                });
+            }
+
+            if(msg.what == 2) {
+
+                imgViewLike.setVisibility(View.VISIBLE);
+                imgViewNotLike.setVisibility(View.INVISIBLE);
+
+                tvNumOfLike.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+                    }
+                });
+            }
+
+        }
+    };
+
+    final Runnable task1 = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            handler.sendEmptyMessage(1);
+
+        }
+    });
+
+    final Runnable task2 = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            handler.sendEmptyMessage(2);
+
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_main_screen);
 
         imgViewAlbumArt = (ImageView) findViewById(R.id.iv_album_art);
+        imgViewLike = (ImageView) findViewById(R.id.iv_like);
+        imgViewNotLike = (ImageView) findViewById(R.id.iv_not_like);
 
         btnGoHome = (ImageButton) findViewById(R.id.img_btn_go_home);
         btnPlay = (ImageButton) findViewById(R.id.img_btn_play_music);
+        btnPause = (ImageButton) findViewById(R.id.img_btn_pause_music);
+        btnPlay.setVisibility(View.INVISIBLE);
 
         btnGoBeforeMusic = (ImageButton) findViewById(R.id.img_btn_go_before_music);
         btnGoNextMusic = (ImageButton) findViewById(R.id.img_btn_go_next_music);
 
         tvCurMusicPos = (TextView) findViewById(R.id.tv_cur_music_pos);
         tvMusicSize = (TextView) findViewById(R.id.tv_music_size);
-
         tvMusicSinger = (TextView) findViewById(R.id.tv_music_singer);
         tvNumOfLike = (TextView) findViewById(R.id.tv_num_of_like);
-
         tvMusicTitle = (TextView) findViewById(R.id.tv_music_title);
 
         musicIdx = getIntent().getIntExtra("position", -1);
         maxIdx = activity_main.data_list.size()-1;
+//                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+
+        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+
+        if(activity_main.data_list.get(musicIdx).hart) {
+
+            imgViewLike.setVisibility(View.VISIBLE);
+            imgViewNotLike.setVisibility(View.INVISIBLE);
+        }
+        else {
+
+            imgViewLike.setVisibility(View.INVISIBLE);
+            imgViewNotLike.setVisibility(View.VISIBLE);
+        }
+
+        imgViewLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                activity_main.data_list.get(musicIdx).hartcount--;
+                activity_main.data_list.get(musicIdx).hart = false;
+
+                imgViewLike.setVisibility(View.INVISIBLE);
+                imgViewNotLike.setVisibility(View.VISIBLE);
+
+                new Thread(task1).start();
+            }
+        });
+
+        imgViewNotLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                activity_main.data_list.get(musicIdx).hartcount++;
+                activity_main.data_list.get(musicIdx).hart = true;
+
+                imgViewLike.setVisibility(View.VISIBLE);
+                imgViewNotLike.setVisibility(View.INVISIBLE);
+
+                new Thread(task2).start();
+            }
+        });
+
 
         btnGoHome.setOnClickListener(btnGoHomeListener);
         btnPlay.setOnClickListener(btnPlayListener);
         btnGoNextMusic.setOnClickListener(btnGoNextListener);
         btnGoBeforeMusic.setOnClickListener(btnGoBeforeListener);
+        btnPause.setOnClickListener(btnPauseListener);
 
         seekBarMainMusic = (SeekBar) findViewById(R.id.seekbar_main_music);
 
@@ -181,6 +286,32 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                     serviceManager.stop();
 
                     seekBarMainMusic.setProgress(0);
+
+                    musicIdx++;
+
+                    while(activity_main.data_list.get(musicIdx).alpha) {
+
+                        if(musicIdx == maxIdx) {
+                            break;
+                        }
+                        musicIdx++;
+                    }
+
+                    Message msg = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("position", String.valueOf(musicIdx));
+                    msg.setData(bundle);
+
+                    handler.sendMessage(msg);
+
+                    serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
+                            activity_main.data_list.get(musicIdx).sound);
+
+                    serviceManager.start();
+
+                    threadAlive = false;
+                    threadAlive = true;
+                    new WatchCurSeekbarPosThread().start();
                 }
             }
 
@@ -216,6 +347,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
             seekBarMainMusic.setProgress(0);
         }
+
     }
 
     @Override
@@ -230,6 +362,21 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         super.onResume();
     }
 
+    boolean isPaused = false;
+
+    ImageButton.OnClickListener btnPauseListener = new ImageButton.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            serviceManager.pause();
+
+            btnPlay.setVisibility(View.VISIBLE);
+            btnPause.setVisibility(View.INVISIBLE);
+
+            isPaused = true;
+        }
+    };
+
     ImageButton.OnClickListener btnGoHomeListener = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -241,6 +388,17 @@ public class MusicMainScreenActivity extends AppCompatActivity {
     ImageButton.OnClickListener btnPlayListener = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            if(isPaused) {
+
+                serviceManager.restart();
+                isPaused = false;
+
+                btnPlay.setVisibility(View.INVISIBLE);
+                btnPause.setVisibility(View.VISIBLE);
+
+                return;
+            }
 
             if(musicIdx == -1) {
                 Log.e(TAG, "btnGoHomeListener: value of musicIdx is crazy.");
@@ -255,6 +413,9 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             threadAlive = false;
             threadAlive = true;
             new WatchCurSeekbarPosThread().start();
+
+            btnPlay.setVisibility(View.INVISIBLE);
+            btnPause.setVisibility(View.VISIBLE);
         }
     };
 
@@ -293,6 +454,21 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                         activity_main.data_list.get(musicIdx).sound);
 
+                if(activity_main.data_list.get(musicIdx).hart) {
+
+                    imgViewLike.setVisibility(View.VISIBLE);
+                    imgViewNotLike.setVisibility(View.INVISIBLE);
+
+                    new Thread(task1).start();
+                }
+                else {
+
+                    imgViewLike.setVisibility(View.INVISIBLE);
+                    imgViewNotLike.setVisibility(View.VISIBLE);
+
+                    new Thread(task2).start();
+                }
+
                 serviceManager.start();
 
                 threadAlive = false;
@@ -317,8 +493,31 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
             musicIdx++;
 
+            while(activity_main.data_list.get(musicIdx).alpha) {
+
+                if(musicIdx == maxIdx) {
+                    break;
+                }
+                musicIdx++;
+            }
+
             serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                     activity_main.data_list.get(musicIdx).sound);
+
+            if(activity_main.data_list.get(musicIdx).hart) {
+
+                imgViewLike.setVisibility(View.VISIBLE);
+                imgViewNotLike.setVisibility(View.INVISIBLE);
+
+                new Thread(task1).start();
+            }
+            else {
+
+                imgViewLike.setVisibility(View.INVISIBLE);
+                imgViewNotLike.setVisibility(View.VISIBLE);
+
+                new Thread(task2).start();
+            }
 
             serviceManager.start();
 

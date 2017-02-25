@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,8 +58,9 @@ public class ARActivity extends Activity implements SensorEventListener {
     TextView like;
     Button left;
     Button right;
-    Switch like_switch;
+    ImageView like_switch;
     Switch ar_switch;
+    LinearLayout layout;
 
     boolean 진입체크 = true;
 
@@ -342,8 +344,8 @@ public class ARActivity extends Activity implements SensorEventListener {
         artist_name = (TextView) findViewById(R.id.ar_artist_name);
         like = (TextView) findViewById(R.id.ar_like);
         ar_switch = (Switch) findViewById(R.id.ar_switch);
-        like_switch = (Switch) findViewById(R.id.ar_like_button);
-
+        like_switch = (ImageView) findViewById(R.id.ar_like_button);
+        layout = (LinearLayout) findViewById(R.id.wrap_layout);
 
 
         Glide.with(this).load(image_list.get(page - 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
@@ -715,6 +717,8 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.setVisibility(View.INVISIBLE);
 //        ar_switch.setVisibility(View.INVISIBLE);
         like_switch.setVisibility(View.INVISIBLE);
+        layout.setVisibility(View.INVISIBLE);
+
 
 
         elbum_ex_iamge_001.invalidate();
@@ -727,7 +731,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.invalidate();
 //        ar_switch.invalidate();
         like_switch.invalidate();
-
+        layout.invalidate();
     }
 
 
@@ -743,6 +747,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.setVisibility(View.VISIBLE);
 //        ar_switch.setVisibility(View.VISIBLE);
         like_switch.setVisibility(View.VISIBLE);
+        layout.setVisibility(View.VISIBLE);
 
 
 //        // load the animation
@@ -773,7 +778,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.invalidate();
 //        ar_switch.invalidate();
         like_switch.invalidate();
-
+        layout.invalidate();
 
     }
     private Handler DialogHandler = new Handler (){
