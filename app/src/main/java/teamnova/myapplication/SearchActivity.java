@@ -47,6 +47,8 @@ public class SearchActivity extends AppCompatActivity {
                 dialog = ProgressDialog.show(SearchActivity.this, "", "등록 중입니다.", true);
                 dialog.show();
 
+                MusicListUtil.내가등록한음악리스트.add(search_list.get(i));
+
                 EndDialog endDialog = new EndDialog();
                 endDialog.start();
             }
