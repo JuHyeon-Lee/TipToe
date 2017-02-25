@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MusicMainScreenActivity extends AppCompatActivity {
@@ -43,5 +44,13 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         tvNumOfLike = (TextView) findViewById(R.id.tv_num_of_like);
 
         tvMusicTitle = (TextView) findViewById(R.id.tv_music_title);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+
+        seekBar.bringToFront();
     }
 }

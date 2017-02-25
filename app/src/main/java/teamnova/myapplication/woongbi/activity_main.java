@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
@@ -18,9 +19,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
@@ -38,7 +43,7 @@ import teamnova.myapplication.R;
 
 public class activity_main extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener {
     FrameLayout mHeader = null;
-    ListView listView = null;
+    SwipeMenuListView listView = null;
     ArrayList<String> arrayList = null;
     View fakeView, fakeView2;
     int button_hight = 700;
@@ -114,6 +119,77 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         start_btn_condition = false; // 일시정지 버튼
 
 
+
+
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                        0x3F, 0x25)));
+                deleteItem.setTitle("삭제");
+                deleteItem.setTitleSize(18);
+                deleteItem.setTitleColor(Color.WHITE);
+                deleteItem.setWidth(dp2px(80));
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        final SwipeMenuCreator creator_alpha = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                deleteItem.setBackground(Color.parseColor("#ffffff"));
+                deleteItem.setWidth(dp2px(200));
+                menu.addMenuItem(deleteItem);
+            }
+        };
+        listView.setMenuCreator(creator);
+//        listView.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
+//            @Override
+//            public void onMenuOpen(int position) {
+//                position = position - 1;
+//                Toast.makeText(getApplicationContext(), ""+position, Toast.LENGTH_SHORT).show();
+//                if(data_list.get(position).alpha){
+//                    listView.setMenuCreator(creator_alpha);
+//                    nowPlay--;
+//                    data_list.remove(position);
+//                    list_adapter.notifyDataSetChanged();
+//                }else{
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onMenuClose(int position) {
+//
+//            }
+//        });
+        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                listView.setMenuCreator(creator_alpha);
+                nowPlay--;
+                data_list.remove(position);
+                list_adapter.notifyDataSetChanged();
+
+                return false;
+            }
+        });
+        listView.setSwipeDirection(SwipeMenuListView.DIRECTION_RIGHT);
+        listView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+
+    }
+
+    private int dp2px(int dp) {
+        float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) (dp * scale + 0.5f);
+        return pixels;
     }
 
     @Override
@@ -328,7 +404,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             item_hart_count.setText(data_list.get(i).hartcount + "");
 
 
-            Log.d("list_nowplay", data_list.get(i).now_play + "");
             if (data_list.get(i).now_play) {
                 title_T.setTextColor(Color.parseColor("#F75B3B"));
                 artist_T.setTextColor(Color.parseColor("#F75B3B"));
@@ -339,8 +414,11 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 artist_T.setAlpha(0.6f);
             }
 
+            Log.d("list_nowalpha", data_list.get(i).alpha + "");
             if (data_list.get(i).alpha) {
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(0.3f);
+            }else{
+                ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(1f);
             }
 
 
@@ -447,6 +525,15 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 startActivity(intent);
             }
         });
+        down_image_I.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
+                Log.d("nowplay", nowPlay + "");
+                intent.putExtra("position", nowPlay);
+                startActivity(intent);
+            }
+        });
     }
 
     public static float clamp(float value, float max, float min) {
@@ -455,7 +542,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
     void New_class() {
         mHeader = (FrameLayout) findViewById(R.id.header);
-        listView = (ListView) findViewById(R.id.listview);
+        listView = (SwipeMenuListView) findViewById(R.id.listview);
         arrayList = new ArrayList<>();
         data_list = new ArrayList<>();
         handler = new Handler(this);
