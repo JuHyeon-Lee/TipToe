@@ -15,21 +15,32 @@
             android:background="#f4f4f4"
             android:layout_gravity="bottom"
             android:id="@+id/relative"
-            android:layout_height="70dp">
+            android:layout_height="70dp"
 
+            >
 
-            <ImageButton
+            <FrameLayout
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_gravity="center|"
-                android:id="@+id/image_btn"
-                android:scaleType="fitCenter"
-                android:background="#00FF0000"
-                android:src="@drawable/btn_play"
-                android:alpha="0.7"
-                android:layout_marginRight="25dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
-                android:layout_width="50dp" />
+                android:layout_marginRight="25dp"
+                >
+
+                <ImageButton
+                    android:layout_height="50dp"
+                    android:layout_gravity="center|"
+                    android:id="@+id/image_btn"
+                    android:scaleType="fitCenter"
+                    android:background="#00FF0000"
+                    android:src="@drawable/btn_play"
+                    android:alpha="0.7"
+
+                    android:layout_width="50dp" />
+
+
+            </FrameLayout>
+
 
             <ImageButton
                 android:layout_height="50dp"
@@ -89,8 +100,11 @@
             android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:dividerHeight="2px"
             android:layout_gravity="bottom"
-            android:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:layout_marginBottom="70dp"
+            />
 
         <FrameLayout
             android:id="@+id/header"

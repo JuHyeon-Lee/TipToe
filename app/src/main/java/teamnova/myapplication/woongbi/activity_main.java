@@ -36,6 +36,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import teamnova.myapplication.Data;
+import teamnova.myapplication.MusicListUtil;
 import teamnova.myapplication.MusicMainScreenActivity;
 import teamnova.myapplication.MusicServiceManager;
 import teamnova.myapplication.PopUpActivity;
@@ -46,7 +47,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     SwipeMenuListView listView = null;
     ArrayList<String> arrayList = null;
     View fakeView, fakeView2;
-    int button_hight = 790;
+    int button_hight = 890;
+    //790
     boolean down = true, once = true;
     MapView mapView;
     MapPOIItem customMarker;
@@ -84,40 +86,24 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //        for(int i = 0; i < 30; i++)
 //            arrayList.add("abc"+i);
 
-        for (int i = 0; i < 20; i++) {
-            boolean alpha = true;
-            if (i > 2)
-                alpha = false;
-            Data data = new Data(R.drawable.elbum_ex_001, "노래" + i, "사람" + i, true, i, false, R.raw.background, alpha);
-            data_list.add(data);
-        }
+//        for (int i = 0; i < 20; i++) {
+//            boolean alpha = true;
+//            if (i > 2)
+//                alpha = false;
+//            Data data = new Data(R.drawable.elbum_ex_001, "노래" + i, "사람" + i, true, i, false, R.raw.background, alpha);
+//            data_list.add(data);
+//        }
+
+        MusicListUtil.내가등록한음악리스트.get(3).now_play = true;
+        down_image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(3).image);
+        down_title_T.setText(MusicListUtil.내가등록한음악리스트.get(3).title.toString());
+        down_artist_T.setText(MusicListUtil.내가등록한음악리스트.get(3).artist);
+        serviceManager = new MusicServiceManager(activity_main.this, MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+        serviceManager.startOnpause();
 
         listView.setAdapter(list_adapter);
         listView.addHeaderView(fakeView);
-
-
-        nowPlay = 3;
-        data_list.get(nowPlay).now_play = true;
-//                Data data = new Data(data_list.get(i-1).image, data_list.get(i-1).title, data_list.get(i-1).artist, data_list.get(i-1).hart,data_list.get(i-1).hartcount, true, data_list.get(i-1).sound, data_list.get(i-1).alpha);
-
-        list_adapter.notifyDataSetChanged();
-//                Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
-//                Log.d("main_position", ""+(i-1));
-//                intent.putExtra("position",i-1);
-//                startActivity(intent);
-
-
-//        down_image_I.setImageResource(data_list.get(nowPlay).image);
-//        down_title_T.setText(data_list.get(nowPlay).title.toString());
-//        down_artist_T.setText(data_list.get(nowPlay).artist);
-//        down_image_btn.setImageResource(R.drawable.btn_pause);
-//
-//
-//        serviceManager = new MusicServiceManager(activity_main.this, data_list.get(nowPlay).sound);
-//        serviceManager.start();
-//
-//        start_btn_condition = false; // 일시정지 버튼
-
+//        listView.addView(fakeView2);
 
 
 
@@ -162,7 +148,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 nowPlay--;
-                data_list.remove(position);
+                MusicListUtil.내가등록한음악리스트.remove(position);
                 list_adapter.notifyDataSetChanged();
 
                 return false;
@@ -357,7 +343,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
         @Override
         public int getCount() {
-            return data_list.size();
+            return MusicListUtil.내가등록한음악리스트.size();
         }
 
         @Override
@@ -385,13 +371,13 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             ImageView item_hart = (ImageView) view.findViewById(R.id.item_hart);
             TextView item_hart_count = (TextView) view.findViewById(R.id.item_hart_count);
 
-            image_I.setImageResource(data_list.get(i).image);
-            title_T.setText(data_list.get(i).title);
-            artist_T.setText(data_list.get(i).artist);
-            item_hart_count.setText(data_list.get(i).hartcount + "");
+            image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(i).image);
+            title_T.setText(MusicListUtil.내가등록한음악리스트.get(i).title);
+            artist_T.setText(MusicListUtil.내가등록한음악리스트.get(i).artist);
+            item_hart_count.setText(MusicListUtil.내가등록한음악리스트.get(i).hartcount + "");
 
 
-            if (data_list.get(i).now_play) {
+            if (MusicListUtil.내가등록한음악리스트.get(i).now_play) {
                 title_T.setTextColor(Color.parseColor("#F75B3B"));
                 artist_T.setTextColor(Color.parseColor("#F75B3B"));
                 artist_T.setAlpha(0.6f);
@@ -401,8 +387,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 artist_T.setAlpha(0.6f);
             }
 
-            Log.d("list_nowalpha", data_list.get(i).alpha + "");
-            if (data_list.get(i).alpha) {
+            Log.d("list_nowalpha", MusicListUtil.내가등록한음악리스트.get(i).alpha + "");
+            if (MusicListUtil.내가등록한음악리스트.get(i).alpha) {
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(0.3f);
             }else{
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(1f);
@@ -462,10 +448,10 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                     serviceManager.stop();
 
                 Log.d("nowplay", nowPlay + "");
-                data_list.get(nowPlay).now_play = false;
+                MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = false;
                 nowPlay = i - 1;
-                data_list.get(nowPlay).now_play = true;
-//                Data data = new Data(data_list.get(i-1).image, data_list.get(i-1).title, data_list.get(i-1).artist, data_list.get(i-1).hart,data_list.get(i-1).hartcount, true, data_list.get(i-1).sound, data_list.get(i-1).alpha);
+                MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = true;
+//                Data data = new Data(MusicListUtil.내가등록한음악리스트.get(i-1).image, data_list.get(i-1).title, data_list.get(i-1).artist, data_list.get(i-1).hart,data_list.get(i-1).hartcount, true, data_list.get(i-1).sound, data_list.get(i-1).alpha);
 
                 list_adapter.notifyDataSetChanged();
 //                Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
@@ -474,13 +460,13 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //                startActivity(intent);
 
 
-                down_image_I.setImageResource(data_list.get(nowPlay).image);
-                down_title_T.setText(data_list.get(nowPlay).title.toString());
-                down_artist_T.setText(data_list.get(nowPlay).artist);
+                down_image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(nowPlay).image);
+                down_title_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).title.toString());
+                down_artist_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).artist);
                 down_image_btn.setImageResource(R.drawable.btn_pause);
 
 
-                serviceManager = new MusicServiceManager(activity_main.this, data_list.get(nowPlay).sound);
+                serviceManager = new MusicServiceManager(activity_main.this, MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
                 serviceManager.start();
 
                 start_btn_condition = false; // 일시정지 버튼
@@ -492,11 +478,11 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             @Override
             public void onClick(View view) {
                 if (start_btn_condition) {
-                    down_image_btn.setImageResource(R.drawable.btn_pause);
+                    down_image_btn.setImageResource(R.drawable.selector_pause);
                     serviceManager.restart();
                     start_btn_condition = false;
                 } else {
-                    down_image_btn.setImageResource(R.drawable.btn_play);
+                    down_image_btn.setImageResource(R.drawable.selector_play);
                     serviceManager.pause();
                     start_btn_condition = true;
                 }
@@ -521,6 +507,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 startActivity(intent);
             }
         });
+
+
     }
 
     public static float clamp(float value, float max, float min) {
@@ -615,9 +603,9 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         Bundle bundle = msg.getData();
         int position = (int) bundle.get("position");
 
-        data_list.get(nowPlay).now_play = false;
+        MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = false;
         nowPlay = position;
-        data_list.get(nowPlay).now_play = true;
+        MusicListUtil.내가등록한음악리스트 .get(nowPlay).now_play = true;
         list_adapter.notifyDataSetChanged();
     }
 
