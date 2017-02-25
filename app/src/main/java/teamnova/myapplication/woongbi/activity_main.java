@@ -68,7 +68,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     TextView down_title_T;
     TextView down_artist_T;
     ImageButton down_image_btn;
-    MusicServiceManager serviceManager;
+    public static MusicServiceManager serviceManager;
     boolean start_btn_condition = true;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -124,6 +124,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 menu.addMenuItem(deleteItem);
             }
         };
+
         listView.setMenuCreator(creator);
 //        listView.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
 //            @Override
@@ -145,6 +146,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //
 //            }
 //        });
+
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -531,6 +533,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
                 Log.d("nowplay", nowPlay + "");
                 intent.putExtra("position", nowPlay);
+                intent.putExtra("duration", serviceManager.getDuration());
                 startActivity(intent);
             }
         });
@@ -540,6 +543,12 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
                 Log.d("nowplay", nowPlay + "");
                 intent.putExtra("position", nowPlay);
+
+                if(serviceManager != null && serviceManager.isPlaying()) {
+
+                    intent.putExtra("music_pos", serviceManager.getCurrentPosition());
+                }
+
                 startActivity(intent);
             }
         });
@@ -631,7 +640,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
         return result;
     }
-
 
     public void handleMessage(Message msg) {
         Bundle bundle = msg.getData();
