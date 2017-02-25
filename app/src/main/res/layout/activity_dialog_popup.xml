@@ -35,5 +35,18 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        android:text="+"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:gravity="end|bottom"
+
+        android:id="@+id/popup_music_add"
+        android:layout_marginBottom="23dp"
+        android:layout_marginEnd="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>
