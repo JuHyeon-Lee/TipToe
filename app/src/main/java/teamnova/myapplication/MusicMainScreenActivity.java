@@ -1,11 +1,10 @@
 package teamnova.myapplication;
 
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import teamnova.myapplication.woongbi.activity_main;
 
 public class MusicMainScreenActivity extends AppCompatActivity {
 
@@ -163,7 +160,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 tvNumOfLike.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+                        tvNumOfLike.setText(""+MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount);
                     }
                 });
             }
@@ -176,7 +173,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 tvNumOfLike.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+                        tvNumOfLike.setText(""+MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount);
                     }
                 });
             }
@@ -224,12 +221,12 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         tvMusicTitle = (TextView) findViewById(R.id.tv_music_title);
 
         musicIdx = getIntent().getIntExtra("position", -1);
-        maxIdx = activity_main.data_list.size()-1;
+        maxIdx = MusicListUtil.내가등록한음악리스트.size()-1;
 //                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
 
-        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+        tvNumOfLike.setText(""+MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount);
 
-        if(activity_main.data_list.get(musicIdx).hart) {
+        if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
             imgViewLike.setVisibility(View.VISIBLE);
             imgViewNotLike.setVisibility(View.INVISIBLE);
@@ -244,8 +241,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                activity_main.data_list.get(musicIdx).hartcount--;
-                activity_main.data_list.get(musicIdx).hart = false;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount--;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hart = false;
 
                 imgViewLike.setVisibility(View.INVISIBLE);
                 imgViewNotLike.setVisibility(View.VISIBLE);
@@ -258,8 +255,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                activity_main.data_list.get(musicIdx).hartcount++;
-                activity_main.data_list.get(musicIdx).hart = true;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount++;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hart = true;
 
                 imgViewLike.setVisibility(View.VISIBLE);
                 imgViewNotLike.setVisibility(View.INVISIBLE);
@@ -289,7 +286,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                     musicIdx++;
 
-                    while(activity_main.data_list.get(musicIdx).alpha) {
+                    while(MusicListUtil.내가등록한음악리스트.get(musicIdx).alpha) {
 
                         if(musicIdx == maxIdx) {
                             break;
@@ -305,7 +302,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                     handler.sendMessage(msg);
 
                     serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                            activity_main.data_list.get(musicIdx).sound);
+                            MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
                     serviceManager.start();
 
@@ -334,7 +331,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
         if(serviceManager != null && serviceManager.isPlaying()) {
 
-            if(serviceManager.getMusicResource() == activity_main.data_list.get(musicIdx).sound) {
+            if(serviceManager.getMusicResource() == MusicListUtil.내가등록한음악리스트.get(musicIdx).sound) {
 
                 seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
 
@@ -406,7 +403,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             }
 
             serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).sound);
+                    MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
             serviceManager.start();
 
@@ -452,9 +449,9 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 musicIdx--;
 
                 serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                        activity_main.data_list.get(musicIdx).sound);
+                        MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
-                if(activity_main.data_list.get(musicIdx).hart) {
+                if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
                     imgViewLike.setVisibility(View.VISIBLE);
                     imgViewNotLike.setVisibility(View.INVISIBLE);
@@ -493,7 +490,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
             musicIdx++;
 
-            while(activity_main.data_list.get(musicIdx).alpha) {
+            while(MusicListUtil.내가등록한음악리스트.get(musicIdx).alpha) {
 
                 if(musicIdx == maxIdx) {
                     break;
@@ -502,9 +499,9 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             }
 
             serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).sound);
+                    MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
-            if(activity_main.data_list.get(musicIdx).hart) {
+            if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
                 imgViewLike.setVisibility(View.VISIBLE);
                 imgViewNotLike.setVisibility(View.INVISIBLE);

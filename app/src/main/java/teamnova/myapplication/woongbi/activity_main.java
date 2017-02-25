@@ -442,17 +442,29 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 ((LinearLayout) view.findViewById(R.id.linear)).setAlpha(1f);
             }
 
-            FrameLayout frameLayout = (FrameLayout)view.findViewById(R.id.heart);
+            final ImageView imageView = (ImageView) view.findViewById(R.id.item_hart);
+
+            if(MusicListUtil.내가등록한음악리스트.get(i).hart){
+                imageView.setImageResource(R.drawable.btn_like_on);
+            }else{
+                imageView.setImageResource(R.drawable.btn_like);
+            }
+
+            LinearLayout frameLayout = (LinearLayout)view.findViewById(R.id.heart);
             frameLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(MusicListUtil.내가등록한음악리스트.get(i).hart){
                         MusicListUtil.내가등록한음악리스트.get(i).hart = false;
-                        ((ImageView)view.findViewById(R.id.item_hart)).setVisibility(View.VISIBLE);
+                        MusicListUtil.내가등록한음악리스트.get(i).hartcount = MusicListUtil.내가등록한음악리스트.get(i).hartcount - 1;
+                        imageView.setBackgroundResource(R.drawable.btn_like);
+
                     }else{
                         MusicListUtil.내가등록한음악리스트.get(i).hart = true;
-                        ((ImageView)view.findViewById(R.id.item_hart_on)).setVisibility(View.VISIBLE);
+                        MusicListUtil.내가등록한음악리스트.get(i).hartcount = MusicListUtil.내가등록한음악리스트.get(i).hartcount + 1;
+                        imageView.setBackgroundResource(R.drawable.btn_like_on);
                     }
+                    list_adapter.notifyDataSetChanged();
                 }
             });
 

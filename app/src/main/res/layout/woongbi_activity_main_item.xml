@@ -66,25 +66,19 @@
             android:layout_height="match_parent"
             android:gravity="right">
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="40dp"
+                android:layout_height="34dp"
+                android:gravity="center"
                 android:id="@+id/heart">
 
                 <ImageView
                     android:background="@drawable/btn_like"
-                    android:visibility="invisible"
                     android:id="@+id/item_hart"
                     android:layout_width="20dp"
                     android:layout_height="17dp" />
 
-                <ImageView
-                    app:srcCompat="@drawable/btn_like_on"
-                    android:visibility="invisible"
-                    android:id="@+id/item_hart_on"
-                    android:layout_width="20dp"
-                    android:layout_height="17dp" />
-            </FrameLayout>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
