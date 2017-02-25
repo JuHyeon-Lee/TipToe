@@ -203,7 +203,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
         if(serviceManager != null && serviceManager.isPlaying()) {
 
-            if(serviceManager.getMusicResource() == activity_main.data_list.get(musicIdx).getSound()) {
+            if(serviceManager.getMusicResource() == activity_main.data_list.get(musicIdx).sound) {
 
                 seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
 
@@ -248,7 +248,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             }
 
             serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).getSound());
+                    activity_main.data_list.get(musicIdx).sound);
 
             serviceManager.start();
 
@@ -291,7 +291,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 musicIdx--;
 
                 serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                        activity_main.data_list.get(musicIdx).getSound());
+                        activity_main.data_list.get(musicIdx).sound);
 
                 serviceManager.start();
 
@@ -318,7 +318,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             musicIdx++;
 
             serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).getSound());
+                    activity_main.data_list.get(musicIdx).sound);
 
             serviceManager.start();
 
@@ -327,4 +327,11 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             new WatchCurSeekbarPosThread().start();
         }
     };
+
+    protected void onStart() {
+        super.onStart();
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekbar_main_music);
+
+        seekBar.bringToFront();
+    }
 }
