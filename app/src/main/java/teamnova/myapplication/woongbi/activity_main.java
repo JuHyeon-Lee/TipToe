@@ -11,14 +11,18 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
 import teamnova.myapplication.R;
+
+import static android.R.attr.bitmap;
 
 
 public class activity_main extends Activity {
@@ -26,8 +30,11 @@ public class activity_main extends Activity {
     ListView listView = null;
     ArrayList<String> arrayList = null;
     View fakeView,fakeView2;
-    int button_hight = 370;
+    int button_hight =700;
     boolean down = true, once = true;
+    MapView mapView;
+    MapPOIItem marker;
+    ArrayList<Data> data_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +48,37 @@ public class activity_main extends Activity {
         fakeView = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item2, listView, false);
         fakeView2 = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item3, listView, false);
 
+
+        // 리스트뷰 데이터 입력
         List_Adapter list_adapter = new List_Adapter(getApplicationContext());
-        for(int i = 0; i < 30; i++)
-            arrayList.add("abc"+i);
+//        for(int i = 0; i < 30; i++)
+//            arrayList.add("abc"+i);
+        for(int i = 0; i < 20; i++){
+            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, R.raw.background);
+            data_list.add(data);
+        }
+
         listView.setAdapter(list_adapter);
         listView.addHeaderView(fakeView);
 
+
+    }
+
+    class Data {
+        int image;
+        String title;
+        String artist;
+        boolean hart;
+        int hartcount;
+        int sound;
+        Data(int image, String title, String artist, boolean hart, int hartcount, int sound){
+            this.image = bitmap;
+            this.title = title;
+            this.artist = artist;
+            this.hart = hart;
+            this.hartcount = hartcount;
+            this.sound = sound;
+        }
     }
 
 
@@ -59,7 +91,7 @@ public class activity_main extends Activity {
 
         @Override
         public int getCount() {
-            return arrayList.size();
+            return data_list.size();
         }
 
         @Override
@@ -79,8 +111,17 @@ public class activity_main extends Activity {
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
             }
 
-            TextView textView = (TextView)view.findViewById(R.id.textView);
-            textView.setText(arrayList.get(i));
+            ImageView image_I = (ImageView) view.findViewById(R.id.image_I);
+            TextView title_T = (TextView)view.findViewById(R.id.title_T);
+            TextView artist_T = (TextView)view.findViewById(R.id.artist_T);
+            ImageView item_hart = (ImageView)view.findViewById(R.id.item_hart);
+            TextView item_hart_count = (TextView)view.findViewById(R.id.item_hart_count);
+
+            image_I.setImageResource(data_list.get(i).image);
+            title_T.setText(data_list.get(i).title);
+            artist_T.setText(data_list.get(i).artist);
+            item_hart_count.setText(data_list.get(i).hartcount+"");
+
 
             return view;
         }
@@ -120,6 +161,13 @@ public class activity_main extends Activity {
                 down = true;
             }
         });
+
+        ((Button)findViewById(R.id.mapButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     public static float clamp(float value, float max, float min) {
@@ -130,15 +178,34 @@ public class activity_main extends Activity {
         mHeader = (FrameLayout)findViewById(R.id.header);
         listView = (ListView)findViewById(R.id.listview);
         arrayList = new ArrayList<>();
+        data_list = new ArrayList<>();
     }
 
 
     void Get_Map(){
-        MapView mapView = new MapView(this);
+        mapView = new MapView(this);
         mapView.setDaumMapApiKey("83464058cb1b1d7ee53c7ee5f0b99170");
 
         ViewGroup viewGroup = (ViewGroup)findViewById(R.id.mapView);
         viewGroup.addView(mapView);
+
+
+//        marker = new MapPOIItem();
+//        marker.setItemName("나");
+//        marker.setTag(0);
+//        marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 기본으로 제공하는 BluePin 마커 모양.
+//        marker.setCustomImageResourceId(R.drawable.marker01);
+//        marker.setSelectedMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+//        marker.setCustomSelectedImageResourceId(R.drawable.marker01);
+//
+//        marker.moveWithAnimation(MapPoint.mapPointWithGeoCoord(37.5649932, 126.9872227), true);
+//        mapView.addPOIItem(marker);
+////        if (gotomelocation) {
+//            mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.5649932, 126.9872227), true);
+////            gotomelocation = false;
+//            mapView.setZoomLevel(0, true);
+////        }
+
     }
 
     public int getScrollY() {
