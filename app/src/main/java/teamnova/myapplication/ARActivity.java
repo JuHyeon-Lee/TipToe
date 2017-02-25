@@ -10,11 +10,17 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
@@ -24,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +44,7 @@ import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
-public class ARActivity extends Activity {
+public class ARActivity extends Activity implements SensorEventListener {
     private static final String TAG = "ARActivity";
     Preview preview;
     Camera camera;
@@ -55,10 +62,32 @@ public class ARActivity extends Activity {
     TextView like;
     Button left;
     Button right;
+    Switch like_switch;
+    Switch ar_switch;
+
+    boolean 진입체크 = true;
+
+    Handler handler = new Handler();
+
+    private long lastTime;
+    private float speed;
+    private float lastX;
+    private float lastY;
+    private float lastZ;
+    private float x, y, z;
+
+    private static final int SHAKE_THRESHOLD = 800;
+    private static final int DATA_X = SensorManager.DATA_X;
+    private static final int DATA_Y = SensorManager.DATA_Y;
+    private static final int DATA_Z = SensorManager.DATA_Z;
+
+    private SensorManager sensorManager;
+    private Sensor accelerormeterSensor;
+
 
     int address = 0x7f020053;
 
-    int page=1;
+    int page = 1;
 
 
     // Request code for camera
@@ -221,10 +250,29 @@ public class ARActivity extends Activity {
         preview.setCamera(camera);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (accelerormeterSensor != null) {
+            sensorManager.registerListener(this, accelerormeterSensor, SensorManager.SENSOR_DELAY_GAME);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (sensorManager !=null){
+            sensorManager.unregisterListener(this);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerormeterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
         ctx = this;
         act = this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -254,11 +302,10 @@ public class ARActivity extends Activity {
 
 
         image_list.add(new ArItem("눈의 꽃", address, "박효신", 52));
-        image_list.add(new ArItem("좋은 사람",address+1,"박효신", 38));
-        image_list.add(new ArItem("널 바라기",address+2,"박효신", 25));
-        image_list.add(new ArItem("바보",address+3,"토이", 12));
-        image_list.add(new ArItem("Happy Together",address+4,"박효신", 2));
-
+        image_list.add(new ArItem("좋은 사람", address + 1, "박효신", 38));
+        image_list.add(new ArItem("널 바라기", address + 2, "박효신", 25));
+        image_list.add(new ArItem("바보", address + 3, "토이", 12));
+        image_list.add(new ArItem("Happy Together", address + 4, "박효신", 2));
 
 
         elbum_ex_iamge_001 = (ImageView) findViewById(R.id.elbum_view_left);
@@ -268,11 +315,14 @@ public class ARActivity extends Activity {
         music_title = (TextView) findViewById(R.id.ar_music_title);
         artist_name = (TextView) findViewById(R.id.ar_artist_name);
         like = (TextView) findViewById(R.id.ar_like);
+        ar_switch = (Switch) findViewById(R.id.ar_switch);
+        like_switch = (Switch) findViewById(R.id.ar_like_button);
 
 
-        Glide.with(this).load(image_list.get(page-1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+
+        Glide.with(this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
         Glide.with(this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
-        Glide.with(this).load(image_list.get(page+1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+        Glide.with(this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
         artist_name.setText(image_list.get(page).artist_name);
         like.setText(String.valueOf(image_list.get(page).like));
         music_title.setText(image_list.get(page).music_title);
@@ -282,25 +332,23 @@ public class ARActivity extends Activity {
         right = (Button) findViewById(R.id.ar_right_button);
 
 
-
         left.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        if(page<=0){
-                                            Toast.makeText(ARActivity.this,"더 이상 데이터가 없습니다", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else{
+                                        if (page <= 0) {
+                                            Toast.makeText(ARActivity.this, "더 이상 데이터가 없습니다", Toast.LENGTH_SHORT).show();
+                                        } else {
                                             page--;
                                             elbum_ex_iamge_001.setVisibility(View.VISIBLE);
                                             elbum_ex_iamge_003.setVisibility(View.VISIBLE);
                                             left.setVisibility(View.VISIBLE);
                                             right.setVisibility(View.VISIBLE);
 
-                                            if(page-1<0){
+                                            if (page - 1 < 0) {
                                                 elbum_ex_iamge_001.setVisibility(View.INVISIBLE);
                                                 left.setVisibility(View.INVISIBLE);
-                                            }else{
-                                                Glide.with(ARActivity.this).load(image_list.get(page-1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+                                            } else {
+                                                Glide.with(ARActivity.this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
                                             }
 
                                             Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
@@ -309,14 +357,9 @@ public class ARActivity extends Activity {
                                             music_title.setText(image_list.get(page).music_title);
 
 
-
-
-
-
-                                            Glide.with(ARActivity.this).load(image_list.get(page+1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+                                            Glide.with(ARActivity.this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
 
                                         }
-
 
 
                                     }
@@ -324,52 +367,37 @@ public class ARActivity extends Activity {
         );
 
         right.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if(page>=image_list.size()-1){
-                                            Toast.makeText(ARActivity.this,"더 이상 데이터가 없습니다", Toast.LENGTH_SHORT).show();
-                                        }else{
-                                            page++;
-                                            elbum_ex_iamge_001.setVisibility(View.VISIBLE);
-                                            elbum_ex_iamge_003.setVisibility(View.VISIBLE);
-                                            right.setVisibility(View.VISIBLE);
-                                            left.setVisibility(View.VISIBLE);
-                                            Glide.with(ARActivity.this).load(image_list.get(page-1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
-                                            Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
-                                            artist_name.setText(image_list.get(page).artist_name);
-                                            like.setText(String.valueOf(image_list.get(page).like));
-                                            music_title.setText(image_list.get(page).music_title);
+                                     @Override
+                                     public void onClick(View view) {
+                                         if (page >= image_list.size() - 1) {
+                                             Toast.makeText(ARActivity.this, "더 이상 데이터가 없습니다", Toast.LENGTH_SHORT).show();
+                                         } else {
+                                             page++;
+                                             elbum_ex_iamge_001.setVisibility(View.VISIBLE);
+                                             elbum_ex_iamge_003.setVisibility(View.VISIBLE);
+                                             right.setVisibility(View.VISIBLE);
+                                             left.setVisibility(View.VISIBLE);
+                                             Glide.with(ARActivity.this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+                                             Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
+                                             artist_name.setText(image_list.get(page).artist_name);
+                                             like.setText(String.valueOf(image_list.get(page).like));
+                                             music_title.setText(image_list.get(page).music_title);
 
 
-                                            if(page+1>=image_list.size()){
-                                                elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
-                                                right.setVisibility(View.INVISIBLE);
-                                            }else {
-                                                Glide.with(ARActivity.this).load(image_list.get(page+1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
-                                            }
+                                             if (page + 1 >= image_list.size()) {
+                                                 elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
+                                                 right.setVisibility(View.INVISIBLE);
+                                             } else {
+                                                 Glide.with(ARActivity.this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+                                             }
 
 
-                                        }
+                                         }
 
 
-
-                                    }
-                                }
+                                     }
+                                 }
         );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }
@@ -478,7 +506,7 @@ public class ARActivity extends Activity {
         int rotation = activity.getWindowManager().getDefaultDisplay()
                 .getRotation();
         int degrees = 0;
-        switch (rotation) {
+        switch (rotation){
             case Surface.ROTATION_0:
                 degrees = 0;
                 break;
@@ -502,6 +530,123 @@ public class ARActivity extends Activity {
         }
 
         return result;
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            long currentTime = System.currentTimeMillis();
+            long gabOfTime = (currentTime - lastTime);
+            if (gabOfTime > 100) {
+                lastTime = currentTime;
+                x = event.values[SensorManager.DATA_X];
+                y = event.values[SensorManager.DATA_Y];
+                z = event.values[SensorManager.DATA_Z];
+
+                speed = Math.abs(x + y + z - lastX - lastY - lastZ) / gabOfTime * 10000;
+
+//                Log.e("SENSOR", "X : " + x);
+//                Log.e("SENSOR", "Y : " + y);
+//                Log.e("SENSOR", "Z : " + z);
+
+
+                if (진입체크) {
+//                    Log.e("TAG", "진입");
+                    if (-1 < z && z < 1) {
+                        //정면
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setAllViewVisible();
+                                Log.e("TAG", "정면입니다");
+                            }
+                        });
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                진입체크 = false;
+
+                                try {
+                                    Thread.sleep(5000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                진입체크 = true;
+                            }
+                        }).start();
+
+                    } else {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setAllViewInvisible();
+                            }
+                        });
+
+                    }
+
+                    if (speed > SHAKE_THRESHOLD) { // 이벤트발생!!
+
+                    }
+
+                    lastX = event.values[DATA_X];
+                    lastY = event.values[DATA_Y];
+                    lastZ = event.values[DATA_Z];
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    void setAllViewInvisible(){
+        elbum_ex_iamge_001.setVisibility(View.INVISIBLE);
+        elbum_ex_iamge_002.setVisibility(View.INVISIBLE);
+        elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
+        left.setVisibility(View.INVISIBLE);
+        right.setVisibility(View.INVISIBLE);
+        music_title.setVisibility(View.INVISIBLE);
+        artist_name.setVisibility(View.INVISIBLE);
+        like.setVisibility(View.INVISIBLE);
+        ar_switch.setVisibility(View.INVISIBLE);
+        like_switch.setVisibility(View.INVISIBLE);
+    }
+
+    void setAllViewVisible(){
+        elbum_ex_iamge_001.setVisibility(View.VISIBLE);
+        elbum_ex_iamge_002.setVisibility(View.VISIBLE);
+        elbum_ex_iamge_003.setVisibility(View.VISIBLE);
+        left.setVisibility(View.VISIBLE);
+        right.setVisibility(View.VISIBLE);
+        music_title.setVisibility(View.VISIBLE);
+        artist_name.setVisibility(View.VISIBLE);
+        like.setVisibility(View.VISIBLE);
+        ar_switch.setVisibility(View.VISIBLE);
+        like_switch.setVisibility(View.VISIBLE);
+
+
+        /*
+         *  뷰 새로고침
+         */
+
+        elbum_ex_iamge_001.invalidate();
+        elbum_ex_iamge_002.invalidate();
+        elbum_ex_iamge_003.invalidate();
+        left.invalidate();
+        right.invalidate();
+        music_title.invalidate();
+        artist_name.invalidate();
+        like.invalidate();
+        ar_switch.invalidate();
+        like_switch.invalidate();
+
+
     }
 
 }
