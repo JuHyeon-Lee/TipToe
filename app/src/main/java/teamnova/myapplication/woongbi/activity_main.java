@@ -2,6 +2,8 @@ package teamnova.myapplication.woongbi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,17 +17,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
+import teamnova.myapplication.PopUpActivity;
 import teamnova.myapplication.R;
 
-import static android.R.attr.bitmap;
 
-
-public class activity_main extends Activity {
+public class activity_main extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener {
     FrameLayout mHeader = null;
     ListView listView = null;
     ArrayList<String> arrayList = null;
@@ -33,7 +36,7 @@ public class activity_main extends Activity {
     int button_hight =700;
     boolean down = true, once = true;
     MapView mapView;
-    MapPOIItem marker;
+    MapPOIItem customMarker;
     ArrayList<Data> data_list;
 
     @Override
@@ -45,6 +48,9 @@ public class activity_main extends Activity {
         Get_Map(); // 맵 가져오기
         Listener(); // 리스너
 
+
+
+
         fakeView = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item2, listView, false);
         fakeView2 = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item3, listView, false);
 
@@ -54,7 +60,9 @@ public class activity_main extends Activity {
 //        for(int i = 0; i < 30; i++)
 //            arrayList.add("abc"+i);
         for(int i = 0; i < 20; i++){
-            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, R.raw.background);
+            Data data = new Data(R.drawable.elbum_ex_002, "노래"+i, "사람"+i, true, i, false , R.raw.background ,false);
+
+
             data_list.add(data);
         }
 
@@ -64,21 +72,211 @@ public class activity_main extends Activity {
 
     }
 
-    class Data {
+    @Override
+    public void onMapViewInitialized(MapView mapView) {
+
+
+        // 중심점 변경
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.5649932,126.9872227), true);
+
+//        MapPOIItem marker = new MapPOIItem();
+//        marker.setItemName("Default Marker");
+//        marker.setTag(0);
+//        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.5649932,126.9872227));
+//        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+//        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+//
+//        mapView.addPOIItem(marker);
+
+
+
+
+        customMarker = new MapPOIItem();
+        customMarker.setItemName("내 위치");
+        customMarker.setTag(1);
+        customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.565116, 126.987194));
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.marker01); // 마커 이미지.
+        customMarker.setCustomImageAutoscale(true); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+
+        mapView.addPOIItem(customMarker);
+
+
+        customMarker = new MapPOIItem();
+        customMarker.setItemName("위워크");
+        customMarker.setTag(2);
+        customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.5649952,126.9872267));
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.marker02); // 마커 이미지.
+        customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+
+        mapView.addPOIItem(customMarker);
+
+        customMarker = new MapPOIItem();
+        customMarker.setItemName("향린교회");
+        customMarker.setTag(3);
+        customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.565618, 126.986686));
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.marker02); // 마커 이미지.
+        customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+
+        mapView.addPOIItem(customMarker);
+
+
+
+
+        customMarker = new MapPOIItem();
+        customMarker.setItemName("SK건설");
+        customMarker.setTag(4);
+        customMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(37.565653, 126.987947));
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.marker02); // 마커 이미지.
+        customMarker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+
+        mapView.addPOIItem(customMarker);
+
+
+
+
+
+
+
+
+
+
+
+
+        MapCircle circle1 = new MapCircle(
+                MapPoint.mapPointWithGeoCoord(37.5649932,126.9872227), // center
+                50, // radius
+                Color.argb(128, 255, 0, 0), // strokeColor
+                Color.argb(128, 255, 255, 0) // fillColor
+        );
+        circle1.setTag(1234);
+        mapView.addCircle(circle1);
+
+//
+//// 지도뷰의 중심좌표와 줌레벨을 Circle이 모두 나오도록 조정.
+//        MapPointBounds[] mapPointBoundsArray = { circle1.getBound()};
+//        MapPointBounds mapPointBounds = new MapPointBounds(mapPointBoundsArray);
+//        int padding = 50; // px
+//        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(mapPointBounds, padding));
+    }
+
+    @Override
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+
+    }
+
+    @Override
+    public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+        switch (mapPOIItem.getTag()){
+            case 1: //내위치
+//                Intent intent = new Intent(activity_main.this , PopUpActivity.class);
+//                intent.putExtra("kind",1);
+//                startActivity(intent);
+                break;
+            case 2: //워크
+                Intent intent2 = new Intent(activity_main.this , PopUpActivity.class);
+                intent2.putExtra("kind",2);
+                startActivity(intent2);
+                break;
+            case 3: //교회
+                Intent intent3 = new Intent(activity_main.this , PopUpActivity.class);
+                intent3.putExtra("kind",3);
+
+                startActivity(intent3);
+                break;
+            case 4: //건설
+                Intent intent4 = new Intent(activity_main.this , PopUpActivity.class);
+                intent4.putExtra("kind",4);
+                startActivity(intent4);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
+    public class Data {
         int image;
         String title;
         String artist;
         boolean hart;
         int hartcount;
+        boolean now_play;
         int sound;
-        Data(int image, String title, String artist, boolean hart, int hartcount, int sound){
-            this.image = bitmap;
+        boolean alpha;
+
+        Data(int image, String title, String artist, boolean hart, int hartcount, boolean now_play, int sound, boolean alpha){
+            this.image = image;
             this.title = title;
             this.artist = artist;
             this.hart = hart;
             this.hartcount = hartcount;
             this.sound = sound;
+            this.now_play = now_play;
+            this.alpha = alpha;
+
+
         }
+
+
+
     }
 
 
@@ -189,6 +387,8 @@ public class activity_main extends Activity {
         ViewGroup viewGroup = (ViewGroup)findViewById(R.id.mapView);
         viewGroup.addView(mapView);
 
+        mapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
+        mapView.setPOIItemEventListener(this);
 
 //        marker = new MapPOIItem();
 //        marker.setItemName("나");

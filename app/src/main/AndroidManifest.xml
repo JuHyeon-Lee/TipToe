@@ -56,6 +56,13 @@
 
         <activity android:name=".Activity_Splash" />
 
+        
+        <activity android:name=".PopUpActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            />
+
+
+        
     </application>
 
 
