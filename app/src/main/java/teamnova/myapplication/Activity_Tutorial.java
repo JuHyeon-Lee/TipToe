@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import teamnova.myapplication.woongbi.activity_main;
+
 public class Activity_Tutorial extends AppCompatActivity {
 
     int MAX_PAGE = 3;
@@ -122,9 +124,8 @@ public class Activity_Tutorial extends AppCompatActivity {
             super.handleMessage(msg);
 
             dialog.dismiss();
-
-            Intent intent = new Intent(Activity_Tutorial.this, Activity_Main.class);
-            startActivity(intent);
+            startActivity(new Intent(getApplicationContext(), activity_main.class));
+//            startActivity(intent);
         }
     };
 
