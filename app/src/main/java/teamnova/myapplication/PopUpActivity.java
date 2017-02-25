@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,6 +28,8 @@ public class PopUpActivity extends Activity {
     RadioButton ar_switch;
     Handler handler = new Handler();
     TextView title;
+
+    Button add;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,17 @@ public class PopUpActivity extends Activity {
 
         ar_switch = (RadioButton) findViewById(R.id.popup_ar_switch);
         title = (TextView) findViewById(R.id.location_title);
+        add = (Button) findViewById(R.id.popup_music_add);
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PopUpActivity.this, SearchActivity.class);
+                intent.putExtra("kind", getIntent().getIntExtra("kind", -1));
+                startActivity(intent);
+                finish();
+            }
+        });
 
         ar_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -149,7 +163,7 @@ public class PopUpActivity extends Activity {
                 convertView = inflater.inflate(layout, parent, false);
                 holder = new ViewHolder();
 
-                holder.Image = (ImageView) convertView.findViewById(R.id.popup_image_I);
+                holder.Image = (ImageView) convertView.findViewById(R.id.popup_image);
                 holder.artist_name = (TextView) convertView.findViewById(R.id.popup_artist_T);
                 holder.music_title = (TextView) convertView.findViewById(R.id.popup_title_T);
                 //cells 를 뷰화시켜서 아이템목록으로 삽입
