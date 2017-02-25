@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceView;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -42,7 +45,7 @@ public class ARActivity extends Activity implements SensorEventListener {
     Camera camera;
     Activity act;
     Context ctx;
-
+    ProgressDialog dialog;
     ArrayList<Data> image_list = new ArrayList<Data>();
 
     ImageView elbum_ex_iamge_001;
@@ -60,6 +63,8 @@ public class ARActivity extends Activity implements SensorEventListener {
     boolean 진입체크 = true;
 
     Handler handler = new Handler();
+    Animation animFadein;
+    Animation animFadeout;
 
     private long lastTime;
     private float speed;
@@ -356,8 +361,13 @@ public class ARActivity extends Activity implements SensorEventListener {
         elbum_ex_iamge_002.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog = ProgressDialog.show(ARActivity.this, "", "재생 목록에 추가 중입니다.", true);
+                dialog.show();
 
-                Toast.makeText(ARActivity.this, image_list.get(page).title + " 곡이 담겼습니다.", Toast.LENGTH_SHORT).show();
+                MusicListUtil.내가등록한음악리스트.add(image_list.get(page));
+
+                EndDialog endDialog = new EndDialog();
+                endDialog.start();
             }
         });
 
@@ -635,7 +645,7 @@ public class ARActivity extends Activity implements SensorEventListener {
                                 진입체크 = false;
 
                                 try {
-                                    Thread.sleep(5000);
+                                    Thread.sleep(3000);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -679,8 +689,22 @@ public class ARActivity extends Activity implements SensorEventListener {
     }
 
 
-
     void setAllViewInvisible(){
+
+
+        Log.e("TAG", "사라지기");
+//        animFadeout = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_out);
+//        elbum_ex_iamge_001.startAnimation(animFadeout);
+//        elbum_ex_iamge_002.startAnimation(animFadeout);
+//        elbum_ex_iamge_003.startAnimation(animFadeout);
+//        left.startAnimation(animFadeout);
+//        right.startAnimation(animFadeout);
+//        music_title.startAnimation(animFadeout);
+//        artist_name.startAnimation(animFadeout);
+//        like_switch.startAnimation(animFadeout);
+//        like.startAnimation(animFadeout);
+
+
         elbum_ex_iamge_001.setVisibility(View.INVISIBLE);
         elbum_ex_iamge_002.setVisibility(View.INVISIBLE);
         elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
@@ -691,7 +715,22 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.setVisibility(View.INVISIBLE);
 //        ar_switch.setVisibility(View.INVISIBLE);
         like_switch.setVisibility(View.INVISIBLE);
+
+
+        elbum_ex_iamge_001.invalidate();
+        elbum_ex_iamge_002.invalidate();
+        elbum_ex_iamge_003.invalidate();
+        left.invalidate();
+        right.invalidate();
+        music_title.invalidate();
+        artist_name.invalidate();
+        like.invalidate();
+//        ar_switch.invalidate();
+        like_switch.invalidate();
+
     }
+
+
 
     void setAllViewVisible(){
         elbum_ex_iamge_001.setVisibility(View.VISIBLE);
@@ -704,6 +743,20 @@ public class ARActivity extends Activity implements SensorEventListener {
         like.setVisibility(View.VISIBLE);
 //        ar_switch.setVisibility(View.VISIBLE);
         like_switch.setVisibility(View.VISIBLE);
+
+
+//        // load the animation
+//        animFadein = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+//        elbum_ex_iamge_001.startAnimation(animFadein);
+//        elbum_ex_iamge_002.startAnimation(animFadein);
+//        elbum_ex_iamge_003.startAnimation(animFadein);
+//        left.startAnimation(animFadein);
+//        right.startAnimation(animFadein);
+//        music_title.startAnimation(animFadein);
+//        artist_name.startAnimation(animFadein);
+//        like_switch.startAnimation(animFadein);
+//        like.startAnimation(animFadein);
+
 
 
         /*
@@ -723,5 +776,29 @@ public class ARActivity extends Activity implements SensorEventListener {
 
 
     }
+    private Handler DialogHandler = new Handler (){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
 
+            dialog.dismiss();
+
+//            finish();
+//            startActivity(new Intent(getApplicationContext(), activity_main.class));
+//            startActivity(intent);
+        }
+    };
+
+    private class EndDialog extends Thread {
+        public void run(){
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            DialogHandler.sendEmptyMessage(0);
+        }
+    }
 }
