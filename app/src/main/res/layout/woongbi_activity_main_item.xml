@@ -11,4 +11,12 @@
         android:textColor="#000"
         android:text="abc"/>
 
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="2dp"
+        >
+
+    </GridLayout>
+
 </LinearLayout>
