@@ -61,7 +61,7 @@
             app:srcCompat="@mipmap/ic_launcher"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:id="@+id/iv_num_of_like" />
+            android:id="@+id/iv_not_like" />
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -75,10 +75,10 @@
             android:text="24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_num_of_like"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/textView"
-            android:textSize="12sp"/>
+            android:id="@+id/tv_num_of_like"
+            android:textSize="12sp"
+            android:layout_below="@+id/iv_not_like"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 
     <LinearLayout

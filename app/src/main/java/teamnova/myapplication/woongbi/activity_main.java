@@ -79,7 +79,7 @@ public class activity_main extends Activity {
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
             }
 
-            TextView textView = (TextView)view.findViewById(R.id.textView);
+            TextView textView = (TextView)view.findViewById(R.id.tv_num_of_like);
             textView.setText(arrayList.get(i));
 
             return view;
