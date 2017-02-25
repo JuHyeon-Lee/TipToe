@@ -10,29 +10,44 @@
     android:weightSum="2"
     android:orientation="vertical">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/popup_list"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/location_title" />
-
     <TextView
         android:text="장소 이름"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:layout_marginTop="30dp"
         android:id="@+id/location_title"
-        android:layout_alignBottom="@+id/popup_ar_switch"
         android:layout_centerHorizontal="true" />
 
-    <Switch
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/popup_list"
+        android:layout_below="@+id/location_title"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp" />
+
+    <RadioButton
         android:text="AR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/popup_ar_switch"
-        android:layout_alignParentTop="true"
+        android:layout_marginStart="80dp"
+        android:layout_below="@+id/location_title"
+        android:layout_toEndOf="@+id/location_title" />
+
+    <Button
+        android:text="+"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:gravity="end|bottom"
+
+        android:id="@+id/popup_music_add"
+        android:layout_marginBottom="23dp"
+        android:layout_marginEnd="25dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
 

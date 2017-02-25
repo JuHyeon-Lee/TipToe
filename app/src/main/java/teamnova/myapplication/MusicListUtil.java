@@ -8,6 +8,7 @@ class MusicListUtil {
     public static ArrayList<Data> 평린교회에등록된음악리스트 = new ArrayList<Data>();
     public static ArrayList<Data> SK건설에등록된음악리스트 = new ArrayList<Data>();
     public static ArrayList<Data> 내가등록한음악리스트 = new ArrayList<Data>();
+    public static ArrayList<Data> 서버에있는음악리스트 = new ArrayList<Data>();
 
     MusicListUtil(){
         for(int i = 0; i < 20; i++){
@@ -26,6 +27,11 @@ class MusicListUtil {
         for(int i = 0; i < 20; i++){
             Data data = new Data(R.drawable.elbum_ex_004, "좋은노래"+i, "사람"+i, true, i, false , R.raw.background ,false);
             내가등록한음악리스트.add(data);
+        }
+
+        for(int i = 0; i < 20; i++){
+            Data data = new Data(R.drawable.elbum_ex_005, "서버에있는노래"+i, "사람"+i, true, i, false , R.raw.background ,false);
+            서버에있는음악리스트.add(data);
         }
 
     }
