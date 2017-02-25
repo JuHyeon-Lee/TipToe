@@ -1,47 +1,122 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="20">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        android:text="지도"
-        android:id="@+id/up"/>
 
-    <ListView
-        android:id="@+id/listview"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:background="@android:color/white" />
+        android:layout_weight="18"
+        android:layout_height="0dp">
 
-    <FrameLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="150dp">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="245px"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:background="#f4f4f4"
+            android:text="재생목록"
+            android:id="@+id/up"/>
 
-        <RelativeLayout
+        <ListView
+            android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mapView">
+            android:layout_gravity="bottom"
+            android:background="@android:color/white" />
 
-        </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="230dp">
 
-        <!--<ImageView-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mapView">
+
+            </RelativeLayout>
+
+            <Button
+                android:layout_width="20px"
+                android:layout_height="50px"
+                android:layout_gravity="center"
+                android:background="#00FF0000"
+                android:id="@+id/mapButton"/>
+
+            <!--<ImageView-->
             <!--android:id="@+id/header_picture"-->
             <!--android:layout_width="match_parent"-->
             <!--android:scaleType="center"-->
             <!--android:layout_height="match_parent" />-->
 
-        <ImageView
-            android:id="@+id/header_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
+
+        </FrameLayout>
 
     </FrameLayout>
 
-</FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#fff"
+        android:id="@+id/relative"
+        android:layout_weight="2">
+
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|"
+            android:id="@+id/image_btn"
+            android:scaleType="fitCenter"
+            android:background="#00FF0000"
+            android:src="@drawable/btn_play"
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageButton
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:id="@+id/down_image_btn"
+            android:src="@mipmap/ic_launcher"
+            android:background="#00FF0000"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/down_image_btn"
+            android:layout_marginStart="36dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="40px"
+                android:id="@+id/title_T"
+                android:text="sober"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="30px"
+                android:id="@+id/artist_T"
+                android:text="childish Gambino"/>
+
+
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

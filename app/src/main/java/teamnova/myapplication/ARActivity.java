@@ -8,17 +8,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.ShutterCallback;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Surface;
@@ -28,6 +23,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -36,10 +32,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -51,7 +43,7 @@ public class ARActivity extends Activity implements SensorEventListener {
     Activity act;
     Context ctx;
 
-    ArrayList<ArItem> image_list = new ArrayList<ArItem>();
+    ArrayList<Data> image_list = new ArrayList<Data>();
 
     ImageView elbum_ex_iamge_001;
     ImageView elbum_ex_iamge_002;
@@ -273,6 +265,21 @@ public class ARActivity extends Activity implements SensorEventListener {
         accelerormeterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ctx = this;
         act = this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -301,11 +308,25 @@ public class ARActivity extends Activity implements SensorEventListener {
          */
 
 
-        image_list.add(new ArItem("눈의 꽃", address, "박효신", 52));
-        image_list.add(new ArItem("좋은 사람", address + 1, "박효신", 38));
-        image_list.add(new ArItem("널 바라기", address + 2, "박효신", 25));
-        image_list.add(new ArItem("바보", address + 3, "토이", 12));
-        image_list.add(new ArItem("Happy Together", address + 4, "박효신", 2));
+        switch(getIntent().getIntExtra("kind", -1)){
+            case 2://위워크
+                image_list = MusicListUtil.위워크에등록된음악리스트;
+                break;
+            case 3://교회
+                image_list = MusicListUtil.평린교회에등록된음악리스트;
+                break;
+            case 4://건설
+                image_list = MusicListUtil.SK건설에등록된음악리스트;
+                break;
+            default:
+                break;
+        }
+//
+//        image_list.add(new ArItem("눈의 꽃", address, "박효신", 52));
+//        image_list.add(new ArItem("좋은 사람", address + 1, "박효신", 38));
+//        image_list.add(new ArItem("널 바라기", address + 2, "박효신", 25));
+//        image_list.add(new ArItem("바보", address + 3, "토이", 12));
+//        image_list.add(new ArItem("Happy Together", address + 4, "박효신", 2));
 
 
         elbum_ex_iamge_001 = (ImageView) findViewById(R.id.elbum_view_left);
@@ -320,16 +341,58 @@ public class ARActivity extends Activity implements SensorEventListener {
 
 
 
-        Glide.with(this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
-        Glide.with(this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
-        Glide.with(this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
-        artist_name.setText(image_list.get(page).artist_name);
-        like.setText(String.valueOf(image_list.get(page).like));
-        music_title.setText(image_list.get(page).music_title);
+        Glide.with(this).load(image_list.get(page - 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+        Glide.with(this).load(image_list.get(page).image).into(elbum_ex_iamge_002);
+        Glide.with(this).load(image_list.get(page + 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+        artist_name.setText(image_list.get(page).artist);
+        like.setText(String.valueOf(image_list.get(page).hartcount));
+        music_title.setText(image_list.get(page).title);
 
 
         left = (Button) findViewById(R.id.ar_left_button);
         right = (Button) findViewById(R.id.ar_right_button);
+
+
+        elbum_ex_iamge_002.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(ARActivity.this, image_list.get(page).title + " 곡이 담겼습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+        ar_switch.setChecked(true);
+        ar_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ar_switch.setChecked(false);
+                            }
+                        });
+
+                        finish();
+                    }
+                }).start();
+
+
+
+            }
+
+        });
+
 
 
         left.setOnClickListener(new View.OnClickListener() {
@@ -348,16 +411,16 @@ public class ARActivity extends Activity implements SensorEventListener {
                                                 elbum_ex_iamge_001.setVisibility(View.INVISIBLE);
                                                 left.setVisibility(View.INVISIBLE);
                                             } else {
-                                                Glide.with(ARActivity.this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+                                                Glide.with(ARActivity.this).load(image_list.get(page - 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
                                             }
 
-                                            Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
-                                            artist_name.setText(image_list.get(page).artist_name);
-                                            like.setText(String.valueOf(image_list.get(page).like));
-                                            music_title.setText(image_list.get(page).music_title);
+                                            Glide.with(ARActivity.this).load(image_list.get(page).image).into(elbum_ex_iamge_002);
+                                            artist_name.setText(image_list.get(page).artist);
+                                            like.setText(String.valueOf(image_list.get(page).hartcount));
+                                            music_title.setText(image_list.get(page).title);
 
 
-                                            Glide.with(ARActivity.this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+                                            Glide.with(ARActivity.this).load(image_list.get(page + 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
 
                                         }
 
@@ -377,18 +440,18 @@ public class ARActivity extends Activity implements SensorEventListener {
                                              elbum_ex_iamge_003.setVisibility(View.VISIBLE);
                                              right.setVisibility(View.VISIBLE);
                                              left.setVisibility(View.VISIBLE);
-                                             Glide.with(ARActivity.this).load(image_list.get(page - 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
-                                             Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
-                                             artist_name.setText(image_list.get(page).artist_name);
-                                             like.setText(String.valueOf(image_list.get(page).like));
-                                             music_title.setText(image_list.get(page).music_title);
+                                             Glide.with(ARActivity.this).load(image_list.get(page - 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
+                                             Glide.with(ARActivity.this).load(image_list.get(page).image).into(elbum_ex_iamge_002);
+                                             artist_name.setText(image_list.get(page).artist);
+                                             like.setText(String.valueOf(image_list.get(page).hartcount));
+                                             music_title.setText(image_list.get(page).title);
 
 
                                              if (page + 1 >= image_list.size()) {
                                                  elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
                                                  right.setVisibility(View.INVISIBLE);
                                              } else {
-                                                 Glide.with(ARActivity.this).load(image_list.get(page + 1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
+                                                 Glide.with(ARActivity.this).load(image_list.get(page + 1).image).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_003);
                                              }
 
 
@@ -432,65 +495,69 @@ public class ARActivity extends Activity implements SensorEventListener {
         startCamera();
     }
 
-    private void refreshGallery(File file) {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(Uri.fromFile(file));
-        sendBroadcast(mediaScanIntent);
-    }
+//    private void refreshGallery(File file) {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        mediaScanIntent.setData(Uri.fromFile(file));
+//        sendBroadcast(mediaScanIntent);
+//    }
+//
+//    ShutterCallback shutterCallback = new ShutterCallback() {
+//        public void onShutter() {
+//            //			 Log.d(TAG, "onShutter'd");
+//        }
+//    };
+//
+//    PictureCallback rawCallback = new PictureCallback() {
+//        public void onPictureTaken(byte[] data, Camera camera) {
+//            //			 Log.d(TAG, "onPictureTaken - raw");
+//        }
+//    };
+//
+//    PictureCallback jpegCallback = new PictureCallback() {
+//        public void onPictureTaken(byte[] data, Camera camera) {
+//            new SaveImageTask().execute(data);
+//            resetCam();
+////            Log.d(TAG, "onPictureTaken - jpeg");
+//        }
+//    };
+//
 
-    ShutterCallback shutterCallback = new ShutterCallback() {
-        public void onShutter() {
-            //			 Log.d(TAG, "onShutter'd");
-        }
-    };
 
-    PictureCallback rawCallback = new PictureCallback() {
-        public void onPictureTaken(byte[] data, Camera camera) {
-            //			 Log.d(TAG, "onPictureTaken - raw");
-        }
-    };
-
-    PictureCallback jpegCallback = new PictureCallback() {
-        public void onPictureTaken(byte[] data, Camera camera) {
-            new SaveImageTask().execute(data);
-            resetCam();
-//            Log.d(TAG, "onPictureTaken - jpeg");
-        }
-    };
-
-    private class SaveImageTask extends AsyncTask<byte[], Void, Void> {
-
-        @Override
-        protected Void doInBackground(byte[]... data) {
-            FileOutputStream outStream = null;
-
-            // Write to SD Card
-            try {
-                File sdCard = Environment.getExternalStorageDirectory();
-                File dir = new File(sdCard.getAbsolutePath() + "/camtest");
-                dir.mkdirs();
-
-                String fileName = String.format("%d.jpg", System.currentTimeMillis());
-                File outFile = new File(dir, fileName);
-
-                outStream = new FileOutputStream(outFile);
-                outStream.write(data[0]);
-                outStream.flush();
-                outStream.close();
-
-//                Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
-
-                refreshGallery(outFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-            }
-            return null;
-        }
-
-    }
+//
+//    private class SaveImageTask extends AsyncTask<byte[], Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(byte[]... data) {
+//            FileOutputStream outStream = null;
+//
+//            // Write to SD Card
+//            try {
+//                File sdCard = Environment.getExternalStorageDirectory();
+//                File dir = new File(sdCard.getAbsolutePath() + "/camtest");
+//                dir.mkdirs();
+//
+//                String fileName = String.format("%d.jpg", System.currentTimeMillis());
+//                File outFile = new File(dir, fileName);
+//
+//                outStream = new FileOutputStream(outFile);
+//                outStream.write(data[0]);
+//                outStream.flush();
+//                outStream.close();
+//
+////                Log.d(TAG, "onPictureTaken - wrote bytes: " + data.length + " to " + outFile.getAbsolutePath());
+//
+//                refreshGallery(outFile);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//            }
+//            return null;
+//        }
+//
+//    }
+//
 
     /**
      * @param activity
@@ -605,6 +672,14 @@ public class ARActivity extends Activity implements SensorEventListener {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+
+
     void setAllViewInvisible(){
         elbum_ex_iamge_001.setVisibility(View.INVISIBLE);
         elbum_ex_iamge_002.setVisibility(View.INVISIBLE);
@@ -614,7 +689,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         music_title.setVisibility(View.INVISIBLE);
         artist_name.setVisibility(View.INVISIBLE);
         like.setVisibility(View.INVISIBLE);
-        ar_switch.setVisibility(View.INVISIBLE);
+//        ar_switch.setVisibility(View.INVISIBLE);
         like_switch.setVisibility(View.INVISIBLE);
     }
 
@@ -627,7 +702,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         music_title.setVisibility(View.VISIBLE);
         artist_name.setVisibility(View.VISIBLE);
         like.setVisibility(View.VISIBLE);
-        ar_switch.setVisibility(View.VISIBLE);
+//        ar_switch.setVisibility(View.VISIBLE);
         like_switch.setVisibility(View.VISIBLE);
 
 
@@ -643,7 +718,7 @@ public class ARActivity extends Activity implements SensorEventListener {
         music_title.invalidate();
         artist_name.invalidate();
         like.invalidate();
-        ar_switch.invalidate();
+//        ar_switch.invalidate();
         like_switch.invalidate();
 
 
