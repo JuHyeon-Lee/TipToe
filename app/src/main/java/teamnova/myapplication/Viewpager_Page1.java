@@ -19,7 +19,7 @@ public class Viewpager_Page1 extends android.support.v4.app.Fragment {
         LinearLayout linearLayout = (LinearLayout)inflater.inflate(R.layout.viewpager_child,container,false);
 
         ImageView tutorial = (ImageView) linearLayout.findViewById(R.id.img_tutorial);
-        tutorial.setImageResource(R.drawable.mockup_iphone1);
+        tutorial.setImageResource(R.drawable.tu1);
 
         return linearLayout;
     }

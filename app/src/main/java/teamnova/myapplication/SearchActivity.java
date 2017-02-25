@@ -147,7 +147,7 @@ public class SearchActivity extends AppCompatActivity {
                 holder.artist_name = (TextView) convertView.findViewById(R.id.search_artist);
                 holder.music_title = (TextView) convertView.findViewById(R.id.search_title);
                 holder.like_cnt = (TextView) convertView.findViewById(R.id.search_like_cnt);
-                holder.like_boolean = (Switch) convertView.findViewById(R.id.search_like);
+                holder.like_boolean = (ImageView) convertView.findViewById(R.id.search_like);
 
 
                 //cells 를 뷰화시켜서 아이템목록으로 삽입
@@ -158,7 +158,6 @@ public class SearchActivity extends AppCompatActivity {
             holder.music_title.setText(components_list.get(position).title);
             holder.artist_name.setText(components_list.get(position).artist);
             Glide.with(SearchActivity.this).load(components_list.get(position).image).into(holder.Image);
-            holder.like_boolean.setChecked(components_list.get(position).hart);
             holder.like_cnt.setText(String.valueOf(components_list.get(position).hartcount));
 
             return convertView;
@@ -171,7 +170,7 @@ public class SearchActivity extends AppCompatActivity {
         TextView music_title;
         TextView artist_name;
         TextView like_cnt;
-        Switch like_boolean;
+        ImageView like_boolean;
 
     }
     private Handler DialogHandler = new Handler (){
