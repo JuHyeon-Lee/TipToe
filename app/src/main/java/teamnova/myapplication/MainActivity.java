@@ -15,4 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(new Intent(getApplicationContext(), activity_main.class));
     }
+
+
 }
