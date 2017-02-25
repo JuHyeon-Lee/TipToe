@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/elbum_ex_001"
+        android:id="@+id/elbum_view_left"
+        android:layout_gravity="left"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="50dp"
+
+        />
+
+    <ImageView
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/elbum_ex_003"
+        android:id="@+id/elbum_view_right"
+        android:layout_gravity="right"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="50dp"
+
+        />
+
+    <ImageView
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:background="@drawable/elbum_ex_002"
+        android:id="@+id/elbum_view_center"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+
+        />
+
+    <Button
+        android:text="이전"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/ar_left_button" />
+
+    <Button
+        android:text="다음"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:id="@+id/ar_right_button" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ar_like_button"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="80dp"
+        />
+
+    <TextView
+        android:text="38"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="70dp"
+        android:textStyle="bold"
+        android:textSize="10sp"
+
+        android:id="@+id/ar_like" />
+
+
+
+    <TextView
+        android:text="Music title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:layout_marginBottom="35dp"
+        android:id="@+id/ar_music_title" />
+
+
+    <TextView
+        android:text="Artist name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="15dp"
+        android:textSize="15sp"
+        android:id="@+id/ar_artist_name" />
+
+
+
+</FrameLayout>
