@@ -336,6 +336,10 @@ public class ARActivity extends Activity {
                                             left.setVisibility(View.VISIBLE);
                                             Glide.with(ARActivity.this).load(image_list.get(page-1).address).bitmapTransform(new BlurTransformation(ARActivity.this)).into(elbum_ex_iamge_001);
                                             Glide.with(ARActivity.this).load(image_list.get(page).address).into(elbum_ex_iamge_002);
+                                            artist_name.setText(image_list.get(page).artist_name);
+                                            like.setText(String.valueOf(image_list.get(page).like));
+                                            music_title.setText(image_list.get(page).music_title);
+
 
                                             if(page+1>=image_list.size()){
                                                 elbum_ex_iamge_003.setVisibility(View.INVISIBLE);
