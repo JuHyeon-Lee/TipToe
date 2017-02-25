@@ -16,10 +16,11 @@ public class MusicService extends Service {
 
     public static final int CONFIG_DEFAULT = Context.BIND_AUTO_CREATE;
     private IBinder mBinder = new LocalBinder();
-    boolean isPlaying = false;
-    MediaPlayer mediaPlayer;
+    static MediaPlayer mediaPlayer;
     int musicResource;
     int pos;
+
+    boolean isReleased;
 
     public class LocalBinder extends Binder {
 
@@ -48,50 +49,82 @@ public class MusicService extends Service {
         return mBinder;
     }
 
+    public int getMusicResource() {
+        return musicResource;
+    }
+
+    public boolean isPlaying() {
+
+        if(mediaPlayer != null && !isReleased)
+            return mediaPlayer.isPlaying();
+        else
+            return false;
+    }
+
+    public int getCurrentPosition() {
+
+        if(mediaPlayer != null)
+            return mediaPlayer.getCurrentPosition();
+        else
+            return 0;
+    }
+
+    public int getDuration() {
+
+        if(mediaPlayer != null)
+            return mediaPlayer.getDuration();
+        else
+            return 0;
+    }
+
+    public void seekTo(int seek) {
+
+        if(mediaPlayer != null)
+            mediaPlayer.seekTo(seek);
+    }
+
     public void start() {
 
-        if(!isPlaying) {
+        mediaPlayer = MediaPlayer.create(
+                getApplicationContext(), musicResource);
 
-            mediaPlayer = MediaPlayer.create(
-                    getApplicationContext(), musicResource);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
 
-            mediaPlayer.setLooping(false);
-            mediaPlayer.start();
-
-            isPlaying = true;
-        }
+        isReleased = false;
     }
 
     public void pause() {
 
-        if(isPlaying) {
+        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
 
-            pos = mediaPlayer.getCurrentPosition();
-            mediaPlayer.pause();
+            if(mediaPlayer != null) {
 
-            isPlaying = false;
+                pos = mediaPlayer.getCurrentPosition();
+                mediaPlayer.pause();
+            }
         }
     }
 
     public void stop() {
 
-        if(isPlaying) {
+        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
 
-            mediaPlayer.stop();
-            mediaPlayer.release();
+            if(mediaPlayer != null) {
 
-            isPlaying = false;
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+                isReleased = true;
+            }
         }
     }
 
     public void restart() {
 
-        if(!isPlaying) {
+        if(mediaPlayer != null && mediaPlayer.isPlaying()) {
 
             mediaPlayer.seekTo(pos);
             mediaPlayer.start();
-
-            isPlaying = true;
         }
     }
 

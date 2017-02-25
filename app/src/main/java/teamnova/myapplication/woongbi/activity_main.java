@@ -66,11 +66,9 @@ public class activity_main extends Activity {
 
         listView.setAdapter(list_adapter);
         listView.addHeaderView(fakeView);
-
-
     }
 
-    class Data {
+    public class Data {
         int image;
         String title;
         String artist;
@@ -86,6 +84,30 @@ public class activity_main extends Activity {
             this.hartcount = hartcount;
             this.sound = sound;
             this.alpha = alpha;
+        }
+
+        public int getSound() {
+            return sound;
+        }
+
+        public int getHartcount() {
+            return hartcount;
+        }
+
+        public String getArtist() {
+            return artist;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public int getImage() {
+            return image;
+        }
+
+        public boolean isHart() {
+            return hart;
         }
     }
 
@@ -119,8 +141,6 @@ public class activity_main extends Activity {
                 view = inflater.inflate(R.layout.woongbi_activity_main_item, viewGroup, false);
             }
 
-            TextView textView = (TextView)view.findViewById(R.id.tv_num_of_like);
-            textView.setText(arrayList.get(i));
             ImageView image_I = (ImageView) view.findViewById(R.id.image_I);
             TextView title_T = (TextView)view.findViewById(R.id.title_T);
             TextView artist_T = (TextView)view.findViewById(R.id.artist_T);

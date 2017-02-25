@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:id="@+id/tv_num_of_like"
+        android:id="@+id/lin"
         android:textColor="#000"
         android:text="abc"
         android:orientation="vertical">

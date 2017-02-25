@@ -32,7 +32,7 @@
             android:layout_marginLeft="10dp"/>
 
         <TextView
-            android:text="99:99"
+            android:text="00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/tv_cur_music_pos"
@@ -43,7 +43,7 @@
         <SeekBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
+            android:id="@+id/seekbar_main_music"
             android:layout_above="@+id/tv_cur_music_pos"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true" />
