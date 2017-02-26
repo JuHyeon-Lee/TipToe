@@ -61,10 +61,10 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     MapView mapView;
     MapPOIItem customMarker;
     MapPOIItem marker;
-    static MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
     static public ArrayList<Data> data_list = new ArrayList<Data>();
 
-    static int length=0;
+    public static int length=0;
 
     static public Handler handler;
     int nowPlay;
