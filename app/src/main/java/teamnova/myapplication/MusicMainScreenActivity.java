@@ -55,6 +55,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
     boolean isPlaying;
     int resource;
 
+    private final int LIKE = 1;
+
     final Handler handler = new Handler(Looper.getMainLooper()) {
 
         @Override
