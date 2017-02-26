@@ -139,6 +139,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 menu.addMenuItem(deleteItem);
             }
         };
+
         listView.setMenuCreator(creator);
 //        listView.setOnMenuStateChangeListener(new SwipeMenuListView.OnMenuStateChangeListener() {
 //            @Override
@@ -160,6 +161,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //
 //            }
 //        });
+
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -670,6 +672,12 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 Log.d("nowplay", nowPlay + "");
                 intent.putExtra("position", nowPlay);
                 length=mediaPlayer.getCurrentPosition();
+
+//                if(serviceManager != null && serviceManager.isPlaying()) {
+//
+//                    intent.putExtra("music_pos", serviceManager.getCurrentPosition());
+//                }
+
                 startActivity(intent);
             }
         });
@@ -763,7 +771,6 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 
         return result;
     }
-
 
     public void handleMessage(Message msg) {
         Bundle bundle = msg.getData();
