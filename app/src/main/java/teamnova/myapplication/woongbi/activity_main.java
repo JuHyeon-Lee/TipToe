@@ -92,6 +92,10 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         Listener(); // 리스너
 
 
+
+
+
+
         fakeView = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item2, listView, false);
         fakeView2 = getLayoutInflater().inflate(R.layout.woongbi_activity_main_item3, listView, false);
 
@@ -178,6 +182,47 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true){
+//                    if(mediaPlayer.isPlaying()){
+//
+//                    }
+//                }
+//
+//            }
+//        }).start();
+
     }
 
     private int dp2px(int dp) {

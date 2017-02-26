@@ -89,10 +89,9 @@
             android:layout_width="match_parent"
             android:layout_gravity="center_horizontal"
             android:visibility="gone"
-            android:background="#f8f8f7"
-            android:text="재생목록"
+            android:background="@drawable/main_action_bar"
             android:id="@+id/up"
-            android:layout_height="150px" />
+            android:layout_height="190px" />
 
         <com.baoyz.swipemenulistview.SwipeMenuListView
             android:id="@+id/listview"
