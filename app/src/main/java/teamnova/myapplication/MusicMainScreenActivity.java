@@ -13,6 +13,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import teamnova.myapplication.woongbi.activity_main;
+
 public class MusicMainScreenActivity extends AppCompatActivity {
 
     public static final String TAG = "MusicMainScreenActivity";
@@ -40,7 +42,6 @@ public class MusicMainScreenActivity extends AppCompatActivity {
     ImageView imgViewLike;
     ImageView imgViewNotLike;
 
-    public static MusicServiceManager serviceManager;
 
     int musicIdx;
     int maxIdx;
@@ -55,7 +56,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
             boolean escapeFlag = false;
 
-            if(serviceManager == null) {
+            if(activity_main.serviceManager == null) {
                 return;
             }
 
@@ -63,7 +64,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                 while(MusicServiceManager.OK_READY) {
 
-                    seekBarMainMusic.setMax(serviceManager.getDuration());
+                    seekBarMainMusic.setMax(activity_main.serviceManager.getDuration());
 
                     Thread th = new Thread(new Runnable() {
                         @Override
@@ -76,7 +77,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
 
-                                    sec = serviceManager.getDuration() / 1000;
+                                    sec = activity_main.serviceManager.getDuration() / 1000;
 
                                     String minute = String.valueOf(sec / 60);
                                     String second = String.valueOf(sec % 60);
@@ -93,9 +94,9 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                     th.start();
 
-                    while(serviceManager.isPlaying()) {
+                    while(activity_main.serviceManager.isPlaying()) {
 
-                        seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
+                        seekBarMainMusic.setProgress(activity_main.serviceManager.getCurrentPosition());
 
                         th = new Thread(new Runnable() {
                             @Override
@@ -107,7 +108,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
 
-                                        sec = serviceManager.getCurrentPosition() / 1000;
+                                        sec = activity_main.serviceManager.getCurrentPosition() / 1000;
 
                                         String minute = String.valueOf(sec / 60);
                                         String second = String.valueOf(sec % 60);
@@ -280,7 +281,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                 if(seekBar.getMax() == progress) {
 
-                    serviceManager.stop();
+                    activity_main.serviceManager.stop();
 
                     seekBarMainMusic.setProgress(0);
 
@@ -301,10 +302,10 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                     handler.sendMessage(msg);
 
-                    serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
+                    activity_main.serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                             MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
-                    serviceManager.start();
+                    activity_main.serviceManager.start();
 
                     threadAlive = false;
                     threadAlive = true;
@@ -320,22 +321,22 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                if(serviceManager == null)
+                if(activity_main.serviceManager == null)
                     return;
 
                 int touchedPosition = seekBar.getProgress();
-                serviceManager.seekTo(touchedPosition);
-                serviceManager.start();
+                activity_main.serviceManager.seekTo(touchedPosition);
+                activity_main.serviceManager.start();
             }
         });
 
-        if(serviceManager != null && serviceManager.isPlaying()) {
+        if(activity_main.serviceManager != null && activity_main.serviceManager.isPlaying()) {
 
-            if(serviceManager.getMusicResource() == MusicListUtil.내가등록한음악리스트.get(musicIdx).sound) {
+            if(activity_main.serviceManager.getMusicResource() == MusicListUtil.내가등록한음악리스트.get(musicIdx).sound) {
 
-                seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
+                seekBarMainMusic.setProgress(activity_main.serviceManager.getCurrentPosition());
 
-                if(serviceManager.isPlaying()) {
+                if(activity_main.serviceManager.isPlaying()) {
                     new WatchCurSeekbarPosThread().start();
                 }
             }
@@ -365,7 +366,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            serviceManager.pause();
+            activity_main.serviceManager.pause();
 
             btnPlay.setVisibility(View.VISIBLE);
             btnPause.setVisibility(View.INVISIBLE);
@@ -388,7 +389,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
             if(isPaused) {
 
-                serviceManager.restart();
+                activity_main.serviceManager.restart();
                 isPaused = false;
 
                 btnPlay.setVisibility(View.INVISIBLE);
@@ -402,10 +403,10 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
+            activity_main.serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                     MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
-            serviceManager.start();
+            activity_main.serviceManager.start();
 
             threadAlive = false;
             threadAlive = true;
@@ -423,7 +424,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            if(serviceManager == null) {
+            if(activity_main.serviceManager == null) {
 
                 return;
             }
@@ -431,7 +432,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             if (System.currentTimeMillis() > pressedTime + 2000) {
 
                 pressedTime = System.currentTimeMillis();
-                serviceManager.seekTo(0);
+                activity_main.serviceManager.seekTo(0);
                 return;
             }
 
@@ -443,12 +444,12 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(serviceManager != null)
-                    serviceManager.stop();
+                if(activity_main.serviceManager != null)
+                    activity_main.serviceManager.stop();
 
                 musicIdx--;
 
-                serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
+                activity_main.serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                         MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
                 if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
@@ -466,7 +467,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                     new Thread(task2).start();
                 }
 
-                serviceManager.start();
+                activity_main.serviceManager.start();
 
                 threadAlive = false;
                 threadAlive = true;
@@ -485,8 +486,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            if(serviceManager != null)
-                serviceManager.stop();
+            if(activity_main.serviceManager != null)
+                activity_main.serviceManager.stop();
 
             musicIdx++;
 
@@ -498,7 +499,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 musicIdx++;
             }
 
-            serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
+            activity_main.serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
                     MusicListUtil.내가등록한음악리스트.get(musicIdx).sound);
 
             if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
@@ -516,7 +517,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 new Thread(task2).start();
             }
 
-            serviceManager.start();
+            activity_main.serviceManager.start();
 
             threadAlive = false;
             threadAlive = true;

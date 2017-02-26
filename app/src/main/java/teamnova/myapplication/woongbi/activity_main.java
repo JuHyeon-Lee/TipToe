@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
@@ -60,8 +61,10 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     MapView mapView;
     MapPOIItem customMarker;
     MapPOIItem marker;
-
+    static MediaPlayer mediaPlayer;
     static public ArrayList<Data> data_list = new ArrayList<Data>();
+
+    static int length=0;
 
     static public Handler handler;
     int nowPlay;
@@ -70,8 +73,8 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
     TextView down_title_T;
     TextView down_artist_T;
     ImageButton down_image_btn;
-    MusicServiceManager serviceManager;
     boolean start_btn_condition = true;
+    public static MusicServiceManager serviceManager;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -106,7 +109,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
 //            data_list.add(data);
 //        }
 
-        nowPlay = 3;
+        nowPlay=3;
         MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = true;
         down_image_I.setImageResource(MusicListUtil.내가등록한음악리스트.get(nowPlay).image);
         down_title_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).title.toString());
@@ -520,12 +523,19 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 song_once = false;
 
-                if (serviceManager != null)
-                    serviceManager.stop();
 
-                Log.d("nowplay", nowPlay + "");
+                if (serviceManager != null) {
+//                    serviceManager.stop();
+//                    Intent intent = new Intent();
+//                    intent.setClass(getApplicationContext(), MusicService.class);
+//                    geta.stopService(intent);
+
+                }
+
+
                 MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = false;
                 nowPlay = i - 1;
+                Log.d("nowplay", nowPlay + "");
                 MusicListUtil.내가등록한음악리스트.get(nowPlay).now_play = true;
 //                Data data = new Data(MusicListUtil.내가등록한음악리스트.get(i-1).image, data_list.get(i-1).title, data_list.get(i-1).artist, data_list.get(i-1).hart,data_list.get(i-1).hartcount, true, data_list.get(i-1).sound, data_list.get(i-1).alpha);
 
@@ -541,9 +551,67 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 down_artist_T.setText(MusicListUtil.내가등록한음악리스트.get(nowPlay).artist);
                 down_image_btn.setImageResource(R.drawable.btn_pause);
 
+//                serviceManager = null;
 
-                serviceManager = new MusicServiceManager(activity_main.this, MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
-                serviceManager.start();
+
+
+
+
+                if(mediaPlayer!=null) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.reset();
+                        mediaPlayer.release();
+                        Log.e("TAG","delete"+nowPlay);
+
+
+                        mediaPlayer = null;
+                        mediaPlayer = new MediaPlayer();
+
+                        mediaPlayer = MediaPlayer.create(
+                                getApplicationContext(), MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+                        mediaPlayer.start();
+
+                    } else {
+                        Log.e("TAG","create1"+nowPlay);
+                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer = MediaPlayer.create(
+                                getApplicationContext(), MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+                        mediaPlayer.start();
+
+                    }
+                }else {
+                    Log.e("TAG","create2"+nowPlay);
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer = MediaPlayer.create(
+                            getApplicationContext(), MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+                    mediaPlayer.start();
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                serviceManager = new MusicServiceManager(activity_main.this, MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+//                serviceManager.start();
+
+
 
                 start_btn_condition = false; // 일시정지 버튼
 
@@ -555,18 +623,31 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
             public void onClick(View view) {
                 if (start_btn_condition) {
                     if(song_once) {
-                        serviceManager.start();
+//                        serviceManager.start();
+                        if(mediaPlayer==null){
+                            mediaPlayer = MediaPlayer.create(
+                                    getApplicationContext(), MusicListUtil.내가등록한음악리스트.get(nowPlay).sound);
+
+                        }
+                        mediaPlayer.start();
                         song_once = false;
                         down_image_btn.setImageResource(R.drawable.selector_pause);
                         start_btn_condition = false;
                     }else{
                         down_image_btn.setImageResource(R.drawable.selector_pause);
-                        serviceManager.restart();
+//                        serviceManager.restart();
                         start_btn_condition = false;
+
+                        mediaPlayer.seekTo(length);
+                        mediaPlayer.start();
+
                     }
                 } else {
                     down_image_btn.setImageResource(R.drawable.selector_play);
-                    serviceManager.pause();
+//                    serviceManager.pause();
+                    mediaPlayer.pause();
+                    length=mediaPlayer.getCurrentPosition();
+
                     start_btn_condition = true;
                 }
             }
@@ -578,6 +659,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
                 Log.d("nowplay", nowPlay + "");
                 intent.putExtra("position", nowPlay);
+                length=mediaPlayer.getCurrentPosition();
                 startActivity(intent);
             }
         });
@@ -587,6 +669,7 @@ public class activity_main extends Activity implements MapView.MapViewEventListe
                 Intent intent = new Intent(getApplicationContext(), MusicMainScreenActivity.class);
                 Log.d("nowplay", nowPlay + "");
                 intent.putExtra("position", nowPlay);
+                length=mediaPlayer.getCurrentPosition();
                 startActivity(intent);
             }
         });

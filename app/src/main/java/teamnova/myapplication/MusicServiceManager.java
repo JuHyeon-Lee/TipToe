@@ -39,6 +39,7 @@ public class MusicServiceManager {
         @Override
         public void onServiceDisconnected(ComponentName name) {
 
+            System.out.println("onServiceDisconnected");
         }
     };
 
