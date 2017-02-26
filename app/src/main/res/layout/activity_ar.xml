@@ -34,13 +34,6 @@
         />
 
 
-    <Switch
-        android:text="AR"
-        android:layout_gravity="end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ar_switch" />
-
     <Button
         android:layout_width="40dp"
         android:layout_height="100dp"
@@ -115,6 +108,15 @@
             android:id="@+id/ar_artist_name" />
 
     </LinearLayout>
+
+    <Switch
+        android:text="AR"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:id="@+id/ar_switch" />
 
 
 </FrameLayout>

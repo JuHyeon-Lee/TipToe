@@ -1,11 +1,11 @@
 package teamnova.myapplication;
 
-import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import teamnova.myapplication.woongbi.activity_main;
+
+import static teamnova.myapplication.woongbi.activity_main.serviceManager;
 
 public class MusicMainScreenActivity extends AppCompatActivity {
 
@@ -43,112 +45,15 @@ public class MusicMainScreenActivity extends AppCompatActivity {
     ImageView imgViewLike;
     ImageView imgViewNotLike;
 
-    public static MusicServiceManager serviceManager;
+    MediaPlayer mediaPlayer;
+
+    SeekBar seekBar;
 
     int musicIdx;
     int maxIdx;
 
-    boolean threadAlive;
-    boolean isPlaying = true;
-
-    boolean deadFlag = false;
-
-    class WatchCurSeekbarPosThread extends Thread {
-
-        @Override
-        public void run() {
-            super.run();
-
-            boolean escapeFlag = false;
-
-            while(threadAlive) {
-
-                while(MusicServiceManager.OK_READY) {
-
-                    seekBarMainMusic.setMax(serviceManager.getDuration());
-
-                    Thread th = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            tvMusicSize.post(new Runnable() {
-
-                                int sec;
-
-                                @Override
-                                public void run() {
-
-                                    sec = serviceManager.getDuration() / 1000;
-
-                                    String minute = String.valueOf(sec / 60);
-                                    String second = String.valueOf(sec % 60);
-
-                                    if (second.length() == 1) {
-                                        second = "0" + second;
-                                    }
-
-                                    tvMusicSize.setText("" + minute + ":" + second);
-                                }
-                            });
-                        }
-                    });
-
-                    th.start();
-
-                    while(isPlaying) {
-
-                        seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
-
-                        th = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvCurMusicPos.post(new Runnable() {
-
-                                    int sec;
-
-                                    @Override
-                                    public void run() {
-
-                                        sec = serviceManager.getCurrentPosition() / 1000;
-
-                                        String minute = String.valueOf(sec / 60);
-                                        String second = String.valueOf(sec % 60);
-
-                                        if (second.length() == 1) {
-                                            second = "0" + second;
-                                        }
-
-                                        tvCurMusicPos.setText("" + minute + ":" + second);
-                                    }
-                                });
-
-//                                mHandler.sendEmptyMessage(0);
-
-                                try {
-
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-
-                        th.start();
-                    }
-
-                    escapeFlag = true;
-                    break;
-                }
-
-                if(escapeFlag) {
-
-                    MusicServiceManager.OK_READY = false;
-                    deadFlag = true;
-                    break;
-                }
-            }
-        }
-    }
+    boolean isPlaying;
+    int resource;
 
     final Handler handler = new Handler(Looper.getMainLooper()) {
 
@@ -163,9 +68,10 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 tvNumOfLike.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
-                        tvMusicTitle.setText(activity_main.data_list.get(musicIdx).title);
-                        tvMusicSinger.setText(activity_main.data_list.get(musicIdx).artist);
+                        tvNumOfLike.setText(""+MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount);
+                        tvMusicTitle.setText(MusicListUtil.내가등록한음악리스트.get(musicIdx).title);
+                        tvMusicSinger.setText(MusicListUtil.내가등록한음악리스트.get(musicIdx).artist);
+                        imgViewAlbumArt.setImageResource(MusicListUtil.내가등록한음악리스트.get(musicIdx).image);
                     }
                 });
             }
@@ -178,9 +84,10 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 tvNumOfLike.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
-                        tvMusicTitle.setText(activity_main.data_list.get(musicIdx).title);
-                        tvMusicSinger.setText(activity_main.data_list.get(musicIdx).artist);
+                        tvNumOfLike.setText(""+MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount);
+                        tvMusicTitle.setText(MusicListUtil.내가등록한음악리스트.get(musicIdx).title);
+                        tvMusicSinger.setText(MusicListUtil.내가등록한음악리스트.get(musicIdx).artist);
+                        imgViewAlbumArt.setImageResource(MusicListUtil.내가등록한음악리스트.get(musicIdx).image);
                     }
                 });
             }
@@ -204,10 +111,88 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         }
     });
 
+    class WatchChangingSeekbarThread extends Thread {
+
+        @Override
+        public void run() {
+            super.run();
+            Thread th = new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    tvMusicSize.post(new Runnable() {
+
+                        int sec;
+
+                        @Override
+                        public void run() {
+
+                            sec = serviceManager.getDuration() / 1000;
+
+                            String minute = String.valueOf(sec / 60);
+                            String second = String.valueOf(sec % 60);
+
+                            if (second.length() == 1) {
+                                second = "0" + second;
+                            }
+
+                            tvMusicSize.setText("" + minute + ":" + second);
+                        }
+                    });
+                }
+            });
+
+            th.start();
+
+            while(isPlaying) {
+
+                seekBarMainMusic.setProgress(mediaPlayer.getCurrentPosition());
+
+                th = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvCurMusicPos.post(new Runnable() {
+
+                            int sec;
+
+                            @Override
+                            public void run() {
+
+                                sec = mediaPlayer.getCurrentPosition() / 1000;
+
+                                String minute = String.valueOf(sec / 60);
+                                String second = String.valueOf(sec % 60);
+
+                                if (second.length() == 1) {
+                                    second = "0" + second;
+                                }
+
+                                tvCurMusicPos.setText("" + minute + ":" + second);
+                            }
+                        });
+
+
+
+                        try {
+
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                th.start();
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_main_screen);
+
+        seekBar = (SeekBar) findViewById(R.id.seekbar_main_music);
 
         imgViewAlbumArt = (ImageView) findViewById(R.id.iv_album_art);
         imgViewLike = (ImageView) findViewById(R.id.iv_like);
@@ -227,17 +212,18 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         tvNumOfLike = (TextView) findViewById(R.id.tv_num_of_like);
         tvMusicTitle = (TextView) findViewById(R.id.tv_music_title);
 
-
         musicIdx = getIntent().getIntExtra("position", -1);
         maxIdx = activity_main.data_list.size()-1;
-//                        tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
+
+        resource = activity_main.data_list.get(musicIdx).sound;
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), resource);
 
         tvMusicTitle.setText(activity_main.data_list.get(musicIdx).title);
         tvMusicSinger.setText(activity_main.data_list.get(musicIdx).artist);
 
         tvNumOfLike.setText(""+activity_main.data_list.get(musicIdx).hartcount);
 
-        if(activity_main.data_list.get(musicIdx).hart) {
+        if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
             imgViewLike.setVisibility(View.VISIBLE);
             imgViewNotLike.setVisibility(View.INVISIBLE);
@@ -252,8 +238,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                activity_main.data_list.get(musicIdx).hartcount--;
-                activity_main.data_list.get(musicIdx).hart = false;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount--;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hart = false;
 
                 imgViewLike.setVisibility(View.INVISIBLE);
                 imgViewNotLike.setVisibility(View.VISIBLE);
@@ -266,8 +252,8 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                activity_main.data_list.get(musicIdx).hartcount++;
-                activity_main.data_list.get(musicIdx).hart = true;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hartcount++;
+                MusicListUtil.내가등록한음악리스트.get(musicIdx).hart = true;
 
                 imgViewLike.setVisibility(View.VISIBLE);
                 imgViewNotLike.setVisibility(View.INVISIBLE);
@@ -275,7 +261,6 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 new Thread(task2).start();
             }
         });
-
 
         btnGoHome.setOnClickListener(btnGoHomeListener);
         btnPlay.setOnClickListener(btnPlayListener);
@@ -291,40 +276,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
 
                 if(seekBar.getMax() == progress) {
 
-                    serviceManager.stop();
-
-                    seekBarMainMusic.setProgress(0);
-
-                    int beforeMusicIdx = musicIdx;
-                    musicIdx++;
-
-                    while(activity_main.data_list.get(musicIdx).alpha) {
-
-                        if(musicIdx >= maxIdx-1) {
-                            break;
-                        }
-                        else {
-
-                            musicIdx++;
-                        }
-                    }
-
-
-                    Message msg = handler.obtainMessage();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("position", String.valueOf(musicIdx));
-                    msg.setData(bundle);
-
-                    handler.sendMessage(msg);
-
-                    serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                            activity_main.data_list.get(musicIdx).sound);
-
-                    serviceManager.start();
-
-                    threadAlive = false;
-                    threadAlive = true;
-                    new WatchCurSeekbarPosThread().start();
+                    mediaPlayer.reset();
                 }
             }
 
@@ -336,62 +288,31 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                if(serviceManager == null)
+                if(mediaPlayer == null)
                     return;
 
                 int touchedPosition = seekBar.getProgress();
-                serviceManager.seekTo(touchedPosition);
-                serviceManager.start();
+                mediaPlayer.seekTo(touchedPosition);
+                mediaPlayer.start();
             }
         });
 
-        if(serviceManager != null && serviceManager.isPlaying()) {
-
-            if(serviceManager.getMusicResource() == activity_main.data_list.get(musicIdx).sound) {
-
-                seekBarMainMusic.setProgress(serviceManager.getCurrentPosition());
-
-                if(serviceManager.isPlaying()) {
-                    new WatchCurSeekbarPosThread().start();
-                }
-            }
-        }
-        else {
-
-            seekBarMainMusic.setProgress(0);
-        }
-
     }
 
-    @Override
-    protected void onPause() {
-        threadAlive = false;
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-//        threadAlive = true;
-        super.onResume();
-    }
-
-    boolean isPaused = false;
+    private int pos;
 
     ImageButton.OnClickListener btnPauseListener = new ImageButton.OnClickListener() {
         @Override
         public void onClick(View v) {
 
-            if(serviceManager == null) {
-
-                return;
-            }
-
-            serviceManager.pause();
-
             btnPlay.setVisibility(View.VISIBLE);
             btnPause.setVisibility(View.INVISIBLE);
 
-            isPaused = true;
+            isPlaying = false;
+
+            mediaPlayer.pause();
+            pos = mediaPlayer.getCurrentPosition();
+
         }
     };
 
@@ -407,13 +328,15 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            if(isPaused) {
+            btnPlay.setVisibility(View.INVISIBLE);
+            btnPause.setVisibility(View.VISIBLE);
 
-                serviceManager.restart();
-                isPaused = false;
+            if(mediaPlayer != null) {
 
-                btnPlay.setVisibility(View.INVISIBLE);
-                btnPause.setVisibility(View.VISIBLE);
+                mediaPlayer.seekTo(pos);
+                mediaPlayer.start();
+
+                isPlaying = true;
 
                 return;
             }
@@ -423,17 +346,13 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).sound);
-
-            serviceManager.start();
-
-            threadAlive = false;
-            threadAlive = true;
-            new WatchCurSeekbarPosThread().start();
-
             btnPlay.setVisibility(View.INVISIBLE);
             btnPause.setVisibility(View.VISIBLE);
+
+            isPlaying = true;
+
+            mediaPlayer.start();
+            new WatchChangingSeekbarThread().start();
         }
     };
 
@@ -444,7 +363,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-            if(serviceManager == null) {
+            if(mediaPlayer == null) {
 
                 return;
             }
@@ -452,7 +371,7 @@ public class MusicMainScreenActivity extends AppCompatActivity {
             if (System.currentTimeMillis() > pressedTime + 2000) {
 
                 pressedTime = System.currentTimeMillis();
-                serviceManager.seekTo(0);
+                mediaPlayer.seekTo(0);
                 return;
             }
 
@@ -464,43 +383,22 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(serviceManager != null)
-                    serviceManager.stop();
-
                 musicIdx--;
+                resource = MusicListUtil.내가등록한음악리스트.get(musicIdx).sound;
 
-                while(activity_main.data_list.get(musicIdx).alpha) {
+                mediaPlayer.release();
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), resource);
 
-                    if(musicIdx <= 0)
-                        break;
-
-                    musicIdx--;
-                }
-
-                serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                        activity_main.data_list.get(musicIdx).sound);
-
-                if(activity_main.data_list.get(musicIdx).hart) {
-
-                    imgViewLike.setVisibility(View.VISIBLE);
-                    imgViewNotLike.setVisibility(View.INVISIBLE);
-
-                    new Thread(task1).start();
-                }
-                else {
-
-                    imgViewLike.setVisibility(View.INVISIBLE);
-                    imgViewNotLike.setVisibility(View.VISIBLE);
+                if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
                     new Thread(task2).start();
                 }
+                else {
 
-                threadAlive = false;
-                threadAlive = true;
+                    new Thread(task1).start();
+                }
 
-                serviceManager.start();
-
-                new WatchCurSeekbarPosThread().start();
+                mediaPlayer.start();
             }
         }
     };
@@ -515,50 +413,26 @@ public class MusicMainScreenActivity extends AppCompatActivity {
                 return;
             }
 
-            if(serviceManager != null)
-                serviceManager.stop();
-
             musicIdx++;
+            resource = MusicListUtil.내가등록한음악리스트.get(musicIdx).sound;
 
-            while(activity_main.data_list.get(musicIdx).alpha) {
+            mediaPlayer.release();
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), resource);
 
-                if(musicIdx == maxIdx) {
-                    break;
-                }
-                musicIdx++;
-            }
-
-            serviceManager = new MusicServiceManager(MusicMainScreenActivity.this,
-                    activity_main.data_list.get(musicIdx).sound);
-
-            if(activity_main.data_list.get(musicIdx).hart) {
-
-                imgViewLike.setVisibility(View.VISIBLE);
-                imgViewNotLike.setVisibility(View.INVISIBLE);
-
-                new Thread(task1).start();
-            }
-            else {
-
-                imgViewLike.setVisibility(View.INVISIBLE);
-                imgViewNotLike.setVisibility(View.VISIBLE);
+            if(MusicListUtil.내가등록한음악리스트.get(musicIdx).hart) {
 
                 new Thread(task2).start();
             }
+            else {
+                new Thread(task1).start();
+            }
 
-            threadAlive = false;
-            threadAlive = true;
-
-            serviceManager.start();
-
-            new WatchCurSeekbarPosThread().start();
+            mediaPlayer.start();
         }
     };
 
     protected void onStart() {
         super.onStart();
-        SeekBar seekBar = (SeekBar) findViewById(R.id.seekbar_main_music);
-
         seekBar.bringToFront();
     }
 }

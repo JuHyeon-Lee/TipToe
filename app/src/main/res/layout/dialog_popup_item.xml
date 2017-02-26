@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
-
-    android:layout_width="500dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
     >
+
 
     <ImageView
         android:scaleType="fitCenter"
+        android:focusable="false"
         android:id="@+id/popup_image"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
         android:layout_width="50dp"
         android:layout_height="50dp" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="17dp"
+        android:background="@drawable/btn_like_on"
+        android:layout_marginRight="45dp"
+        android:id="@+id/popup_like"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:text="52"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/popup_like_cnt"
+        android:layout_marginEnd="25dp"
+        android:layout_centerVertical="true"
+        android:focusable="false"
+        android:layout_alignParentEnd="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        >
+        android:focusable="false"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/popup_image"
+        android:layout_marginStart="10dp">
 
 
         <TextView
@@ -29,7 +52,8 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="40px"
-            android:id="@+id/popup_title_T"
+            android:id="@+id/popup_title"
+            android:focusable="false"
             android:text="sober"/>
 
         <TextView
@@ -37,13 +61,62 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="30px"
-            android:id="@+id/popup_artist_T"
+            android:id="@+id/popup_artist"
+            android:focusable="false"
             android:text="childish Gambino"/>
+
 
 
     </LinearLayout>
 
+</RelativeLayout>
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:gravity="center_vertical"-->
+
+    <!--android:layout_width="500dp"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--&gt;-->
+
+    <!--<ImageView-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:id="@+id/popup_image"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp" />-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--&gt;-->
+
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#000000"-->
+            <!--android:textSize="40px"-->
+            <!--android:id="@+id/popup_title_T"-->
+            <!--android:text="sober"/>-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="#000000"-->
+            <!--android:textSize="30px"-->
+            <!--android:id="@+id/popup_artist_T"-->
+            <!--android:text="childish Gambino"/>-->
+
+
+    <!--</LinearLayout>-->
 
 
 
-</LinearLayout>
+
+<!--</LinearLayout>-->
