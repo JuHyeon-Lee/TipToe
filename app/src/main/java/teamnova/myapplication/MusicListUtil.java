@@ -72,13 +72,13 @@ public class MusicListUtil {
     }
     void 내노래추가(){
 
-        내가등록한음악리스트.add(new Data(R.drawable.p001, "Day Day", "BeWhy", true,10, false , R.raw.m001dayday ,false));
-        내가등록한음악리스트.add(new Data(R.drawable.p002, "Forever", "BeWhy", true, 4, false , R.raw.m002forever ,false));
+        내가등록한음악리스트.add(new Data(R.drawable.p001, "Day Day", "BeWhy", true,10, false , R.raw.m001dayday ,true));
+        내가등록한음악리스트.add(new Data(R.drawable.p002, "Forever", "BeWhy", true, 4, false , R.raw.m002forever ,true));
         내가등록한음악리스트.add(new Data(R.drawable.p003, "휘파람", "블랙핑크", true, 18, false , R.raw.m003whistle ,false));
         내가등록한음악리스트.add(new Data(R.drawable.p004, "Beautiful", "Crush", true, 36, false , R.raw.m004beautiful ,false));
-        내가등록한음악리스트.add(new Data(R.drawable.p005, "I`m not the only one", "Sam Smith", true, 17, false , R.raw.m005imnottheonlyone ,false));
-        내가등록한음악리스트.add(new Data(R.drawable.p006, "KNOCK KNOCK", "TWICE", true, 44, false , R.raw.m006knockknock ,false));
-        내가등록한음악리스트.add(new Data(R.drawable.p007, "TT", "TWICE", true, 33, false , R.raw.m007tt ,false));
+        내가등록한음악리스트.add(new Data(R.drawable.p005, "I`m not the only one", "Sam Smith", true, 17, false , R.raw.m005imnottheonlyone ,true));
+        내가등록한음악리스트.add(new Data(R.drawable.p006, "KNOCK KNOCK", "TWICE", true, 44, false , R.raw.m006knockknock ,true));
+        내가등록한음악리스트.add(new Data(R.drawable.p007, "TT", "TWICE", true, 33, false , R.raw.m007tt ,true));
         내가등록한음악리스트.add(new Data(R.drawable.p008, "녹아요", "TWICE", true, 19, false , R.raw.m008melt ,false));
         내가등록한음악리스트.add(new Data(R.drawable.p009, "낙인", "김경호", true, 47, false , R.raw.m009stamp ,false));
         내가등록한음악리스트.add(new Data(R.drawable.p010, "비정", "김경호", true, 40, false , R.raw.m010beejung ,false));
