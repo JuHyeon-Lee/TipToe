@@ -2,7 +2,7 @@ package teamnova.myapplication;
 
 import java.util.ArrayList;
 
-class MusicListUtil {
+public class MusicListUtil {
 
     public static ArrayList<Data> 위워크에등록된음악리스트 = new ArrayList<Data>();
     public static ArrayList<Data> 평린교회에등록된음악리스트 = new ArrayList<Data>();

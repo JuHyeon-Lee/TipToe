@@ -3,6 +3,7 @@ package teamnova.myapplication;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -49,6 +50,13 @@ public class MusicService extends Service {
         return mBinder;
     }
 
+    @Override
+    public void unbindService(ServiceConnection conn) {
+        super.unbindService(conn);
+
+
+    }
+
     public int getMusicResource() {
         return musicResource;
     }
@@ -88,7 +96,7 @@ public class MusicService extends Service {
         mediaPlayer = MediaPlayer.create(
                 getApplicationContext(), musicResource);
 
-        mediaPlayer.setLooping(true);
+        mediaPlayer.setLooping(false);
         mediaPlayer.start();
 
         isReleased = false;
@@ -116,6 +124,7 @@ public class MusicService extends Service {
                 mediaPlayer.reset();
                 isReleased = true;
             }
+            this.stopSelf();
         }
     }
 
